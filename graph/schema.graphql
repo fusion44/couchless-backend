@@ -1,0 +1,27 @@
+
+type User {
+    id: ID!
+    username: String!
+    email: String!
+}
+
+type Activity {
+    id: ID!
+    comment: String
+    user: User!
+}
+
+type Query {
+    activity(id: ID!): Activity!
+    activities: [Activity!]!
+    user(id: ID!): User!
+    users: [User!]!
+}
+
+input NewActivity {
+    timestamp: Int!
+}
+
+type Mutation {
+    addActivity(input: NewActivity!): Activity!
+}

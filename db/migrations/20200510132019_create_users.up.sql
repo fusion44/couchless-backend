@@ -1,0 +1,9 @@
+CREATE TABLE users
+(
+  id         BIGSERIAL PRIMARY KEY,
+  username   VARCHAR(55) UNIQUE NOT NULL,
+  email      VARCHAR(255) UNIQUE NOT NULL,
+  password   BYTEA NOT NULL,
+  ip_address VARCHAR(45),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

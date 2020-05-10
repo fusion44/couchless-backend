@@ -1,0 +1,25 @@
+CREATE TABLE activities
+(
+  id BIGSERIAL PRIMARY KEY,
+  sport_type INTEGER,
+  comment TEXT,
+  start_time TIMESTAMP NOT NULL,
+  end_time TIMESTAMP NOT NULL,
+  time_paused INTEGER, -- seconds
+  avg_pace FLOAT,
+  avg_speed FLOAT,
+  avg_cadence FLOAT,
+  avg_fractional_cadence FLOAT,
+  max_cadence FLOAT,
+  max_speed FLOAT,
+  altitude_diff_up INTEGER,
+  altitude_diff_down INTEGER,
+  max_altitude INTEGER,
+  avg_heart_rate SMALLINT,
+  max_heart_rate SMALLINT,
+  total_training_effect REAL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+  user_id BIGSERIAL REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+  FOREIGN KEY (sport_type) REFERENCES sport_types(id) ON DELETE CASCADE
+);
