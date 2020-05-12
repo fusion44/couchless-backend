@@ -29,6 +29,15 @@ input NewActivity {
     sportType: String!
 }
 
+input UpdateActivity {
+    id: ID!
+    startTime: String
+    endTime:String
+    comment: String
+    sportType: String
+}
+
 type Mutation {
     addActivity(input: NewActivity!): Activity!
+    updateActivity(input: UpdateActivity!): Activity!
 }

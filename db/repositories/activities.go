@@ -39,3 +39,9 @@ func (r *ActivitiesRepository) AddActivity(activity *model.Activity) (*model.Act
 	_, err := r.DB.Model(activity).Returning("*").Insert()
 	return activity, err
 }
+
+// UpdateActivity updates an activity in the database
+func (r *ActivitiesRepository) UpdateActivity(activity *model.Activity) (*model.Activity, error) {
+	_, err := r.DB.Model(activity).Where("id = ?", activity.ID).Returning("*").Update()
+	return activity, err
+}

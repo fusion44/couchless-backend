@@ -9,6 +9,14 @@ type NewActivity struct {
 	SportType string  `json:"sportType"`
 }
 
+type UpdateActivity struct {
+	ID        string  `json:"id"`
+	StartTime *string `json:"startTime"`
+	EndTime   *string `json:"endTime"`
+	Comment   *string `json:"comment"`
+	SportType *string `json:"sportType"`
+}
+
 type User struct {
 	ID       string `json:"id"`
 	Username string `json:"username"`

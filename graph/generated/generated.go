@@ -55,7 +55,8 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		AddActivity func(childComplexity int, input model.NewActivity) int
+		AddActivity    func(childComplexity int, input model.NewActivity) int
+		UpdateActivity func(childComplexity int, input model.UpdateActivity) int
 	}
 
 	Query struct {
@@ -77,6 +78,7 @@ type ActivityResolver interface {
 }
 type MutationResolver interface {
 	AddActivity(ctx context.Context, input model.NewActivity) (*model.Activity, error)
+	UpdateActivity(ctx context.Context, input model.UpdateActivity) (*model.Activity, error)
 }
 type QueryResolver interface {
 	Activity(ctx context.Context, id string) (*model.Activity, error)
@@ -160,6 +162,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.AddActivity(childComplexity, args["input"].(model.NewActivity)), true
+
+	case "Mutation.updateActivity":
+		if e.complexity.Mutation.UpdateActivity == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateActivity_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateActivity(childComplexity, args["input"].(model.UpdateActivity)), true
 
 	case "Query.activities":
 		if e.complexity.Query.Activities == nil {
@@ -315,8 +329,17 @@ input NewActivity {
     sportType: String!
 }
 
+input UpdateActivity {
+    id: ID!
+    startTime: String
+    endTime:String
+    comment: String
+    sportType: String
+}
+
 type Mutation {
     addActivity(input: NewActivity!): Activity!
+    updateActivity(input: UpdateActivity!): Activity!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -331,6 +354,20 @@ func (ec *executionContext) field_Mutation_addActivity_args(ctx context.Context,
 	var arg0 model.NewActivity
 	if tmp, ok := rawArgs["input"]; ok {
 		arg0, err = ec.unmarshalNNewActivity2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐNewActivity(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateActivity_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.UpdateActivity
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNUpdateActivity2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUpdateActivity(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -677,6 +714,47 @@ func (ec *executionContext) _Mutation_addActivity(ctx context.Context, field gra
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().AddActivity(rctx, args["input"].(model.NewActivity))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Activity)
+	fc.Result = res
+	return ec.marshalNActivity2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivity(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateActivity(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateActivity_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateActivity(rctx, args["input"].(model.UpdateActivity))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2105,6 +2183,48 @@ func (ec *executionContext) unmarshalInputNewActivity(ctx context.Context, obj i
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUpdateActivity(ctx context.Context, obj interface{}) (model.UpdateActivity, error) {
+	var it model.UpdateActivity
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+			it.ID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "startTime":
+			var err error
+			it.StartTime, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "endTime":
+			var err error
+			it.EndTime, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "comment":
+			var err error
+			it.Comment, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "sportType":
+			var err error
+			it.SportType, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -2193,6 +2313,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = graphql.MarshalString("Mutation")
 		case "addActivity":
 			out.Values[i] = ec._Mutation_addActivity(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updateActivity":
+			out.Values[i] = ec._Mutation_updateActivity(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -2670,6 +2795,10 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNUpdateActivity2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUpdateActivity(ctx context.Context, v interface{}) (model.UpdateActivity, error) {
+	return ec.unmarshalInputUpdateActivity(ctx, v)
 }
 
 func (ec *executionContext) marshalNUser2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {

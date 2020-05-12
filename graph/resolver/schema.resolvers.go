@@ -5,6 +5,8 @@ package resolver
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
 	loader "github.com/fusion44/ll-backend/db/loaders"
 	"github.com/fusion44/ll-backend/graph/generated"
@@ -25,6 +27,49 @@ func (r *mutationResolver) AddActivity(ctx context.Context, input model.NewActiv
 		UserID:    "1",
 	}
 	return r.ActivityRepo.AddActivity(&activity)
+}
+
+func (r *mutationResolver) UpdateActivity(ctx context.Context, input model.UpdateActivity) (*model.Activity, error) {
+	activity, err := r.ActivityRepo.GetActivityByID(input.ID)
+	if err != nil || activity == nil {
+		return nil, errors.New("Activity does not exists")
+	}
+
+	didUpdate := false
+
+	if input.Comment != nil {
+		if len(*input.Comment) < 2 {
+			return nil, errors.New("Comment should be at least two characters")
+		}
+		activity.Comment = *input.Comment
+		didUpdate = true
+	}
+
+	if input.StartTime != nil {
+		activity.StartTime = *input.StartTime
+		didUpdate = true
+	}
+
+	if input.EndTime != nil {
+		activity.EndTime = *input.EndTime
+		didUpdate = true
+	}
+	if input.SportType != nil {
+		activity.SportType = *input.SportType
+		didUpdate = true
+	}
+
+	if !didUpdate {
+		return nil, errors.New("Nothing to update")
+	}
+
+	activity, err = r.ActivityRepo.UpdateActivity(activity)
+
+	if err != nil {
+		return nil, fmt.Errorf("Error while updating activity: %v", err)
+	}
+
+	return activity, nil
 }
 
 func (r *queryResolver) Activity(ctx context.Context, id string) (*model.Activity, error) {
