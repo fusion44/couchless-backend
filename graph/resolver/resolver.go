@@ -1,6 +1,6 @@
 //go:generate go run github.com/99designs/gqlgen --verbose
 
-package graph
+package resolver
 
 import "github.com/fusion44/ll-backend/db/repositories"
 

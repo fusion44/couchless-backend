@@ -33,3 +33,9 @@ func (r *ActivitiesRepository) GetActivities() ([]*model.Activity, error) {
 
 	return activities, nil
 }
+
+// AddActivity inserts an activity into the database
+func (r *ActivitiesRepository) AddActivity(activity *model.Activity) (*model.Activity, error) {
+	_, err := r.DB.Model(activity).Returning("*").Insert()
+	return activity, err
+}

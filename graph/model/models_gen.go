@@ -3,7 +3,10 @@
 package model
 
 type NewActivity struct {
-	Timestamp int `json:"timestamp"`
+	StartTime string  `json:"startTime"`
+	EndTime   string  `json:"endTime"`
+	Comment   *string `json:"comment"`
+	SportType string  `json:"sportType"`
 }
 
 type User struct {

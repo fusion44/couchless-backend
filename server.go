@@ -9,8 +9,8 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/fusion44/ll-backend/db"
-	"github.com/fusion44/ll-backend/graph"
 	"github.com/fusion44/ll-backend/graph/generated"
+	"github.com/fusion44/ll-backend/graph/resolver"
 
 	gcontext "github.com/fusion44/ll-backend/context"
 )
@@ -21,7 +21,7 @@ func main() {
 	DB.AddQueryHook(db.Logger{})
 	defer DB.Close()
 
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &resolver.Resolver{
 		UsersRepo:    repositories.UsersRepository{DB: DB},
 		ActivityRepo: repositories.ActivitiesRepository{DB: DB},
 	}}))

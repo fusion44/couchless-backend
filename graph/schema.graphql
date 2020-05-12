@@ -7,7 +7,11 @@ type User {
 
 type Activity {
     id: ID!
+    createdAt: String!
+    startTime: String!
+    endTime: String!
     comment: String
+    sportType: String!
     user: User!
 }
 
@@ -19,7 +23,10 @@ type Query {
 }
 
 input NewActivity {
-    timestamp: Int!
+    startTime: String!
+    endTime:String!
+    comment: String
+    sportType: String!
 }
 
 type Mutation {

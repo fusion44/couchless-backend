@@ -1,7 +1,7 @@
 CREATE TABLE activities
 (
   id BIGSERIAL PRIMARY KEY,
-  sport_type INTEGER,
+  sport_type VARCHAR(45),
   comment TEXT,
   start_time TIMESTAMP NOT NULL,
   end_time TIMESTAMP NOT NULL,
@@ -21,5 +21,5 @@ CREATE TABLE activities
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
   user_id BIGSERIAL REFERENCES users(id) ON DELETE CASCADE NOT NULL,
-  FOREIGN KEY (sport_type) REFERENCES sport_types(id) ON DELETE CASCADE
+  FOREIGN KEY (sport_type) REFERENCES sport_types(name) ON DELETE CASCADE
 );

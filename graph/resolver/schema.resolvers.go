@@ -1,11 +1,10 @@
-package graph
+package resolver
 
 // This file will be automatically regenerated based on the schema, any resolver implementations
 // will be copied through when generating and any unknown code will be moved to the end.
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/fusion44/ll-backend/graph/generated"
 	"github.com/fusion44/ll-backend/graph/model"
@@ -16,7 +15,15 @@ func (r *activityResolver) User(ctx context.Context, obj *model.Activity) (*mode
 }
 
 func (r *mutationResolver) AddActivity(ctx context.Context, input model.NewActivity) (*model.Activity, error) {
-	panic(fmt.Errorf("not implemented"))
+	// TODO: Add checks
+	activity := model.Activity{
+		Comment:   *input.Comment,
+		StartTime: input.StartTime,
+		EndTime:   input.EndTime,
+		SportType: input.SportType,
+		UserID:    "1",
+	}
+	return r.ActivityRepo.AddActivity(&activity)
 }
 
 func (r *queryResolver) Activity(ctx context.Context, id string) (*model.Activity, error) {
