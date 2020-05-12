@@ -6,12 +6,13 @@ package resolver
 import (
 	"context"
 
+	loader "github.com/fusion44/ll-backend/db/loaders"
 	"github.com/fusion44/ll-backend/graph/generated"
 	"github.com/fusion44/ll-backend/graph/model"
 )
 
 func (r *activityResolver) User(ctx context.Context, obj *model.Activity) (*model.User, error) {
-	return r.UsersRepo.GetUserByID(obj.UserID)
+	return loader.GetUserLoader(ctx).Load(obj.UserID)
 }
 
 func (r *mutationResolver) AddActivity(ctx context.Context, input model.NewActivity) (*model.Activity, error) {

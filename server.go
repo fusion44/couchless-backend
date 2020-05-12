@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	loader "github.com/fusion44/ll-backend/db/loaders"
 	"github.com/fusion44/ll-backend/db/repositories"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -27,7 +28,7 @@ func main() {
 	}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	http.Handle("/query", loader.UserLoaderMiddleware(DB, srv))
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", cfg.ServerPort)
 	log.Fatal(http.ListenAndServe(":"+cfg.ServerPort, nil))
