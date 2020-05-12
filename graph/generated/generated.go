@@ -56,6 +56,7 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		AddActivity    func(childComplexity int, input model.NewActivity) int
+		DeleteActivity func(childComplexity int, id string) int
 		UpdateActivity func(childComplexity int, input model.UpdateActivity) int
 	}
 
@@ -79,6 +80,7 @@ type ActivityResolver interface {
 type MutationResolver interface {
 	AddActivity(ctx context.Context, input model.NewActivity) (*model.Activity, error)
 	UpdateActivity(ctx context.Context, input model.UpdateActivity) (*model.Activity, error)
+	DeleteActivity(ctx context.Context, id string) (bool, error)
 }
 type QueryResolver interface {
 	Activity(ctx context.Context, id string) (*model.Activity, error)
@@ -162,6 +164,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.AddActivity(childComplexity, args["input"].(model.NewActivity)), true
+
+	case "Mutation.deleteActivity":
+		if e.complexity.Mutation.DeleteActivity == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteActivity_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteActivity(childComplexity, args["id"].(string)), true
 
 	case "Mutation.updateActivity":
 		if e.complexity.Mutation.UpdateActivity == nil {
@@ -340,6 +354,7 @@ input UpdateActivity {
 type Mutation {
     addActivity(input: NewActivity!): Activity!
     updateActivity(input: UpdateActivity!): Activity!
+    deleteActivity(id: ID!): Boolean!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -359,6 +374,20 @@ func (ec *executionContext) field_Mutation_addActivity_args(ctx context.Context,
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteActivity_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -769,6 +798,47 @@ func (ec *executionContext) _Mutation_updateActivity(ctx context.Context, field 
 	res := resTmp.(*model.Activity)
 	fc.Result = res
 	return ec.marshalNActivity2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivity(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteActivity(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteActivity_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteActivity(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_activity(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2318,6 +2388,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "updateActivity":
 			out.Values[i] = ec._Mutation_updateActivity(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteActivity":
+			out.Values[i] = ec._Mutation_deleteActivity(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

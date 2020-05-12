@@ -22,6 +22,12 @@ func (r *ActivitiesRepository) GetActivityByID(id string) (*model.Activity, erro
 	return &activity, nil
 }
 
+// DeleteActivity deletes the given activity
+func (r *ActivitiesRepository) DeleteActivity(activity *model.Activity) error {
+	_, err := r.DB.Model(activity).Where("id = ?", activity.ID).Delete()
+	return err
+}
+
 // GetActivities returns all activities in the database
 func (r *ActivitiesRepository) GetActivities() ([]*model.Activity, error) {
 	var activities []*model.Activity

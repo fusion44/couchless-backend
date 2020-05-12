@@ -72,6 +72,21 @@ func (r *mutationResolver) UpdateActivity(ctx context.Context, input model.Updat
 	return activity, nil
 }
 
+func (r *mutationResolver) DeleteActivity(ctx context.Context, id string) (bool, error) {
+	activity, err := r.ActivityRepo.GetActivityByID(id)
+	if err != nil || activity == nil {
+		return false, errors.New("Activity does not exists")
+	}
+
+	err = r.ActivityRepo.DeleteActivity(activity)
+
+	if err != nil {
+		return false, fmt.Errorf("Error deleting activity: %v", err)
+	}
+
+	return true, nil
+}
+
 func (r *queryResolver) Activity(ctx context.Context, id string) (*model.Activity, error) {
 	return r.ActivityRepo.GetActivityByID(id)
 }

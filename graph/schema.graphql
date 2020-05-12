@@ -40,4 +40,5 @@ input UpdateActivity {
 type Mutation {
     addActivity(input: NewActivity!): Activity!
     updateActivity(input: UpdateActivity!): Activity!
+    deleteActivity(id: ID!): Boolean!
 }
