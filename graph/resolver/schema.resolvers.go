@@ -91,8 +91,8 @@ func (r *queryResolver) Activity(ctx context.Context, id string) (*model.Activit
 	return r.ActivityRepo.GetActivityByID(id)
 }
 
-func (r *queryResolver) Activities(ctx context.Context) ([]*model.Activity, error) {
-	return r.ActivityRepo.GetActivities()
+func (r *queryResolver) Activities(ctx context.Context, filter *model.ActivityFilter, limit *int, offset *int) ([]*model.Activity, error) {
+	return r.ActivityRepo.GetActivities(filter, limit, offset)
 }
 
 func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {

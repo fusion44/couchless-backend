@@ -15,9 +15,16 @@ type Activity {
     user: User!
 }
 
+input ActivityFilter {
+    startTime: String
+    endTime: String
+    comment: String
+    sportType: String
+}
+
 type Query {
     activity(id: ID!): Activity!
-    activities: [Activity!]!
+    activities(filter: ActivityFilter, limit: Int = 10, offset: Int = 0): [Activity!]!
     user(id: ID!): User!
     users: [User!]!
 }

@@ -2,6 +2,13 @@
 
 package model
 
+type ActivityFilter struct {
+	StartTime *string `json:"startTime"`
+	EndTime   *string `json:"endTime"`
+	Comment   *string `json:"comment"`
+	SportType *string `json:"sportType"`
+}
+
 type NewActivity struct {
 	StartTime string  `json:"startTime"`
 	EndTime   string  `json:"endTime"`

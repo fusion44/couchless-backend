@@ -61,7 +61,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Activities func(childComplexity int) int
+		Activities func(childComplexity int, filter *model.ActivityFilter, limit *int, offset *int) int
 		Activity   func(childComplexity int, id string) int
 		User       func(childComplexity int, id string) int
 		Users      func(childComplexity int) int
@@ -84,7 +84,7 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	Activity(ctx context.Context, id string) (*model.Activity, error)
-	Activities(ctx context.Context) ([]*model.Activity, error)
+	Activities(ctx context.Context, filter *model.ActivityFilter, limit *int, offset *int) ([]*model.Activity, error)
 	User(ctx context.Context, id string) (*model.User, error)
 	Users(ctx context.Context) ([]*model.User, error)
 }
@@ -194,7 +194,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.Query.Activities(childComplexity), true
+		args, err := ec.field_Query_activities_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Activities(childComplexity, args["filter"].(*model.ActivityFilter), args["limit"].(*int), args["offset"].(*int)), true
 
 	case "Query.activity":
 		if e.complexity.Query.Activity == nil {
@@ -329,9 +334,16 @@ type Activity {
     user: User!
 }
 
+input ActivityFilter {
+    startTime: String
+    endTime: String
+    comment: String
+    sportType: String
+}
+
 type Query {
     activity(id: ID!): Activity!
-    activities: [Activity!]!
+    activities(filter: ActivityFilter, limit: Int = 10, offset: Int = 0): [Activity!]!
     user(id: ID!): User!
     users: [User!]!
 }
@@ -416,6 +428,36 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_activities_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.ActivityFilter
+	if tmp, ok := rawArgs["filter"]; ok {
+		arg0, err = ec.unmarshalOActivityFilter2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityFilter(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["limit"]; ok {
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg1
+	var arg2 *int
+	if tmp, ok := rawArgs["offset"]; ok {
+		arg2, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg2
 	return args, nil
 }
 
@@ -897,9 +939,16 @@ func (ec *executionContext) _Query_activities(ctx context.Context, field graphql
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_activities_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Activities(rctx)
+		return ec.resolvers.Query().Activities(rctx, args["filter"].(*model.ActivityFilter), args["limit"].(*int), args["offset"].(*int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2217,6 +2266,42 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputActivityFilter(ctx context.Context, obj interface{}) (model.ActivityFilter, error) {
+	var it model.ActivityFilter
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "startTime":
+			var err error
+			it.StartTime, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "endTime":
+			var err error
+			it.EndTime, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "comment":
+			var err error
+			it.Comment, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "sportType":
+			var err error
+			it.SportType, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputNewActivity(ctx context.Context, obj interface{}) (model.NewActivity, error) {
 	var it model.NewActivity
 	var asMap = obj.(map[string]interface{})
@@ -3153,6 +3238,18 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
+func (ec *executionContext) unmarshalOActivityFilter2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityFilter(ctx context.Context, v interface{}) (model.ActivityFilter, error) {
+	return ec.unmarshalInputActivityFilter(ctx, v)
+}
+
+func (ec *executionContext) unmarshalOActivityFilter2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityFilter(ctx context.Context, v interface{}) (*model.ActivityFilter, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOActivityFilter2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityFilter(ctx, v)
+	return &res, err
+}
+
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	return graphql.UnmarshalBoolean(v)
 }
@@ -3174,6 +3271,29 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	return ec.marshalOBoolean2bool(ctx, sel, *v)
+}
+
+func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v interface{}) (int, error) {
+	return graphql.UnmarshalInt(v)
+}
+
+func (ec *executionContext) marshalOInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	return graphql.MarshalInt(v)
+}
+
+func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOInt2int(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec.marshalOInt2int(ctx, sel, *v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

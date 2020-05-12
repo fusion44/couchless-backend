@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"fmt"
+
 	"github.com/fusion44/ll-backend/graph/model"
 	"github.com/go-pg/pg/v9"
 )
@@ -29,9 +31,37 @@ func (r *ActivitiesRepository) DeleteActivity(activity *model.Activity) error {
 }
 
 // GetActivities returns all activities in the database
-func (r *ActivitiesRepository) GetActivities() ([]*model.Activity, error) {
+func (r *ActivitiesRepository) GetActivities(filter *model.ActivityFilter, limit, offset *int) ([]*model.Activity, error) {
 	var activities []*model.Activity
-	err := r.DB.Model(&activities).Order("id").Select()
+
+	query := r.DB.Model(&activities).Order("id")
+
+	if filter != nil {
+		if filter.StartTime != nil {
+			query.Where("start_time >= ?", filter.StartTime)
+		}
+
+		if filter.EndTime != nil {
+			query.Where("end_time <= ?", filter.EndTime)
+		}
+
+		if filter.Comment != nil && *filter.Comment != "" {
+			query.Where("comment ILIKE ?", fmt.Sprintf("%%%s%%", *filter.Comment))
+		}
+
+		if filter.SportType != nil && *filter.SportType != "" {
+			query.Where("sport_type = ?", *filter.SportType)
+		}
+	}
+
+	if limit != nil {
+		query.Limit(*limit)
+	}
+
+	if offset != nil {
+		query.Offset(*offset)
+	}
+	err := query.Select()
 
 	if err != nil {
 		return nil, err
