@@ -25,7 +25,7 @@ func (r *ActivitiesRepository) GetActivityByID(id string) (*model.Activity, erro
 // GetActivities returns all activities in the database
 func (r *ActivitiesRepository) GetActivities() ([]*model.Activity, error) {
 	var activities []*model.Activity
-	err := r.DB.Model(&activities).Select()
+	err := r.DB.Model(&activities).Order("id").Select()
 
 	if err != nil {
 		return nil, err

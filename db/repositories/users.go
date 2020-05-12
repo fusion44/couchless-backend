@@ -25,7 +25,7 @@ func (r *UsersRepository) GetUserByID(id string) (*model.User, error) {
 // GetUsers returns all users in the database
 func (r *UsersRepository) GetUsers() ([]*model.User, error) {
 	var users []*model.User
-	err := r.DB.Model(&users).Select()
+	err := r.DB.Model(&users).Order("id").Select()
 
 	if err != nil {
 		return nil, err
