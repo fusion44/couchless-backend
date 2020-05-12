@@ -12,14 +12,14 @@ type ActivitiesRepository struct {
 
 // GetActivityByID returns the activity for the given ID
 func (r *ActivitiesRepository) GetActivityByID(id string) (*model.Activity, error) {
-	var activity *model.Activity
+	var activity model.Activity
 	err := r.DB.Model(&activity).Where("id = ?", id).First()
 
 	if err != nil {
 		return nil, err
 	}
 
-	return activity, nil
+	return &activity, nil
 }
 
 // GetActivities returns all activities in the database
