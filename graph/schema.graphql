@@ -1,8 +1,35 @@
+scalar Time
+
+type AuthToken {
+    accessToken: String!
+    expiredAt: Time!
+}
+
+type AuthResponse {
+    authToken: AuthToken!
+    user: User!
+}
 
 type User {
     id: ID!
     username: String!
     email: String!
+    createdAt: Time!
+    updatedAt: Time!
+}
+
+input RegisterInput {
+    username: String!
+    email: String!
+    password: String!
+    confirmPassword: String!
+}
+
+# Either username or password must be set
+input LoginInput {
+    username: String
+    email: String
+    password: String!
 }
 
 type Activity {
@@ -45,6 +72,9 @@ input UpdateActivity {
 }
 
 type Mutation {
+    register(input: RegisterInput!): AuthResponse!
+    login(input: LoginInput!): AuthResponse!
+
     addActivity(input: NewActivity!): Activity!
     updateActivity(input: UpdateActivity!): Activity!
     deleteActivity(id: ID!): Boolean!

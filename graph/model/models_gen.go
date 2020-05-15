@@ -2,11 +2,31 @@
 
 package model
 
+import (
+	"time"
+)
+
 type ActivityFilter struct {
 	StartTime *string `json:"startTime"`
 	EndTime   *string `json:"endTime"`
 	Comment   *string `json:"comment"`
 	SportType *string `json:"sportType"`
+}
+
+type AuthResponse struct {
+	AuthToken *AuthToken `json:"authToken"`
+	User      *User      `json:"user"`
+}
+
+type AuthToken struct {
+	AccessToken string    `json:"accessToken"`
+	ExpiredAt   time.Time `json:"expiredAt"`
+}
+
+type LoginInput struct {
+	Username *string `json:"username"`
+	Email    *string `json:"email"`
+	Password string  `json:"password"`
 }
 
 type NewActivity struct {
@@ -16,16 +36,17 @@ type NewActivity struct {
 	SportType string  `json:"sportType"`
 }
 
+type RegisterInput struct {
+	Username        string `json:"username"`
+	Email           string `json:"email"`
+	Password        string `json:"password"`
+	ConfirmPassword string `json:"confirmPassword"`
+}
+
 type UpdateActivity struct {
 	ID        string  `json:"id"`
 	StartTime *string `json:"startTime"`
 	EndTime   *string `json:"endTime"`
 	Comment   *string `json:"comment"`
 	SportType *string `json:"sportType"`
-}
-
-type User struct {
-	ID       string `json:"id"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
 }
