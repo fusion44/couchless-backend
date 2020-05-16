@@ -5,11 +5,11 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/go-chi/chi/middleware"
-
 	loader "github.com/fusion44/ll-backend/db/loaders"
 	"github.com/fusion44/ll-backend/db/repositories"
+	"github.com/fusion44/ll-backend/domain"
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"github.com/rs/cors"
 
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -46,8 +46,7 @@ func main() {
 	router.Use(gcontext.ConfigMiddleware(AppConfig))
 
 	c := generated.Config{Resolvers: &resolver.Resolver{
-		ActivityRepo: activityRepo,
-		UsersRepo:    userRepo,
+		Domain: domain.NewDomain(userRepo, activityRepo),
 	}}
 
 	queryHander := handler.GraphQL(generated.NewExecutableSchema(c))

@@ -10,3 +10,8 @@ type Activity struct {
 	UserID    string `json:"userId"`
 	CreatedAt string `json:"createdAt"`
 }
+
+// IsOwner returns whether the given user is the owner of this activity
+func (a *Activity) IsOwner(user *User) bool {
+	return a.UserID == user.ID
+}
