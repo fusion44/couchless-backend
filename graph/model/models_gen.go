@@ -4,6 +4,8 @@ package model
 
 import (
 	"time"
+
+	"github.com/99designs/gqlgen/graphql"
 )
 
 type ActivityFilter struct {
@@ -49,4 +51,9 @@ type UpdateActivity struct {
 	EndTime   *string `json:"endTime"`
 	Comment   *string `json:"comment"`
 	SportType *string `json:"sportType"`
+}
+
+type UploadFile struct {
+	ID   int            `json:"id"`
+	File graphql.Upload `json:"file"`
 }

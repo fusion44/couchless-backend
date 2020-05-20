@@ -1,4 +1,5 @@
 scalar Time
+scalar Upload
 
 type AuthToken {
     accessToken: String!
@@ -70,6 +71,11 @@ input UpdateActivity {
     sportType: String
 }
 
+input UploadFile {
+    id: Int!
+    file: Upload!
+}
+
 type Mutation {
     register(input: RegisterInput!): AuthResponse!
     login(input: LoginInput!): AuthResponse!
@@ -77,4 +83,7 @@ type Mutation {
     addActivity(input: NewActivity!): Activity!
     updateActivity(input: UpdateActivity!): Activity!
     deleteActivity(id: ID!): Boolean!
+
+    singleUpload(file: Upload!): Boolean!
+    multipleUpload(req: [UploadFile!]!): [Boolean!]!
 }

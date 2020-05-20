@@ -48,6 +48,9 @@ func (r *mutationResolver) DeleteActivity(ctx context.Context, id string) (bool,
 	return r.Domain.DeleteActivity(ctx, id)
 }
 
+func (r *mutationResolver) SingleUpload(ctx context.Context, file graphql.Upload) (bool, error) {
+	return r.Domain.HandleSingleFileUpload(ctx, file)
+}
 func (r *queryResolver) Activity(ctx context.Context, id string) (*model.Activity, error) {
 	return r.Domain.GetActivityByID(ctx, id)
 }
