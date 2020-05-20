@@ -8,6 +8,7 @@ import (
 	loader "github.com/fusion44/ll-backend/db/loaders"
 	"github.com/fusion44/ll-backend/db/repositories"
 	"github.com/fusion44/ll-backend/domain"
+	service "github.com/fusion44/ll-backend/services"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/rs/cors"
@@ -27,6 +28,8 @@ var AppConfig *gcontext.Config
 
 func main() {
 	AppConfig := gcontext.LoadConfig(".")
+	logger := service.NewLogger(AppConfig)
+
 	DB := db.New(AppConfig)
 	DB.AddQueryHook(db.Logger{})
 	defer DB.Close()
@@ -43,6 +46,7 @@ func main() {
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Logger)
 	router.Use(projMiddleware.AuthMiddleware(AppConfig, &userRepo))
+	router.Use(projMiddleware.LoggerMiddleware(logger))
 	router.Use(gcontext.ConfigMiddleware(AppConfig))
 
 	c := generated.Config{Resolvers: &resolver.Resolver{

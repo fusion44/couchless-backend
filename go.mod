@@ -13,4 +13,5 @@ require (
 	github.com/vektah/gqlparser/v2 v2.0.1
 	golang.org/x/crypto v0.0.0-20200221231518-2aa609cf4a9d
 	github.com/vektah/gqlparser v1.3.1
+	github.com/op/go-logging v0.0.0-20160315200505-970db520ece7
 )
