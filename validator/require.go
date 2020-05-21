@@ -28,5 +28,5 @@ func isEmpty(value interface{}) bool {
 		return t.Len() == 0
 	}
 
-	return false
+	return true
 }

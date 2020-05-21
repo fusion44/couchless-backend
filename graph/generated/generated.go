@@ -418,10 +418,11 @@ input RegisterInput {
     confirmPassword: String!
 }
 
-# Either username or password must be set
+"The ` + "`" + `LoginInput` + "`" + ` type represents the required login input"
 input LoginInput {
-    username: String
-    email: String
+    "The ` + "`" + `username` + "`" + ` can either be an email or the actual username"
+    username: String!
+    "The ` + "`" + `password` + "`" + ` length must be 8 characters minimum"
     password: String!
 }
 
@@ -2693,13 +2694,7 @@ func (ec *executionContext) unmarshalInputLoginInput(ctx context.Context, obj in
 		switch k {
 		case "username":
 			var err error
-			it.Username, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "email":
-			var err error
-			it.Email, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.Username, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}

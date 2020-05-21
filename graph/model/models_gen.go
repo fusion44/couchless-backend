@@ -25,10 +25,12 @@ type AuthToken struct {
 	ExpiredAt   time.Time `json:"expiredAt"`
 }
 
+// The `LoginInput` type represents the required login input
 type LoginInput struct {
-	Username *string `json:"username"`
-	Email    *string `json:"email"`
-	Password string  `json:"password"`
+	// The `username` can either be an email or the actual username
+	Username string `json:"username"`
+	// The `password` length must be 8 characters minimum
+	Password string `json:"password"`
 }
 
 type NewActivity struct {

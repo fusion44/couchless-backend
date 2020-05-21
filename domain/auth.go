@@ -78,25 +78,26 @@ func (d *Domain) Register(ctx context.Context, input model.RegisterInput) (*mode
 
 // Login logs a user in
 func (d *Domain) Login(ctx context.Context, input model.LoginInput) (*model.AuthResponse, error) {
-	if input.Email == nil && input.Username == nil {
-		return nil, errors.New("Login failed, no email or username provided")
+	valid, _ := input.Validate()
+	if !valid {
+		return nil, ErrBadCredentials
 	}
 
 	var user *model.User
 	var err error
 
 	v := validator.New()
-	if v.IsEmail("email", *input.Email) {
-		user, err = d.UsersRepo.GetUserByEmail(*input.Email)
+	if v.IsEmail("email", input.Username) {
+		user, err = d.UsersRepo.GetUserByEmail(input.Username)
+	} else if v.MinLength("usernameLength", input.Username, 2) {
+		user, err = d.UsersRepo.GetUserByUsername(input.Username)
+	} else {
+		return nil, ErrBadCredentials
 	}
-
-	if user == nil && v.Require("username", *input.Username) && v.MinLength("usernameLength", *input.Username, 2) {
-		user, err = d.UsersRepo.GetUserByUsername(*input.Username)
-	}
-
-	input.Validate()
 
 	if err != nil {
+		// Input valid, but no user found
+		log.Printf("No user found with username: %s", input.Username)
 		return nil, ErrBadCredentials
 	}
 
