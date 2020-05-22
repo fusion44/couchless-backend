@@ -6,6 +6,7 @@ package resolver
 import (
 	"context"
 
+	"github.com/99designs/gqlgen/graphql"
 	loader "github.com/fusion44/ll-backend/db/loaders"
 	"github.com/fusion44/ll-backend/domain"
 	"github.com/fusion44/ll-backend/graph/generated"
@@ -13,6 +14,10 @@ import (
 )
 
 func (r *activityResolver) User(ctx context.Context, obj *model.Activity) (*model.User, error) {
+	return loader.GetUserLoader(ctx).Load(obj.UserID)
+}
+
+func (r *fileDescriptorResolver) User(ctx context.Context, obj *model.FileDescriptor) (*model.User, error) {
 	return loader.GetUserLoader(ctx).Load(obj.UserID)
 }
 
@@ -48,9 +53,10 @@ func (r *mutationResolver) DeleteActivity(ctx context.Context, id string) (bool,
 	return r.Domain.DeleteActivity(ctx, id)
 }
 
-func (r *mutationResolver) SingleUpload(ctx context.Context, file graphql.Upload) (bool, error) {
+func (r *mutationResolver) SingleUpload(ctx context.Context, file graphql.Upload) (*model.FileDescriptor, error) {
 	return r.Domain.HandleSingleFileUpload(ctx, file)
 }
+
 func (r *queryResolver) Activity(ctx context.Context, id string) (*model.Activity, error) {
 	return r.Domain.GetActivityByID(ctx, id)
 }
@@ -66,6 +72,11 @@ func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error
 // Activity returns generated.ActivityResolver implementation.
 func (r *Resolver) Activity() generated.ActivityResolver { return &activityResolver{r} }
 
+// FileDescriptor returns generated.FileDescriptorResolver implementation.
+func (r *Resolver) FileDescriptor() generated.FileDescriptorResolver {
+	return &fileDescriptorResolver{r}
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
@@ -73,5 +84,6 @@ func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResol
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 type activityResolver struct{ *Resolver }
+type fileDescriptorResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

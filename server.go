@@ -36,6 +36,7 @@ func main() {
 
 	userRepo := repositories.UsersRepository{DB: DB}
 	activityRepo := repositories.ActivitiesRepository{DB: DB}
+	fileRepo := repositories.FileDescRepository{DB: DB}
 
 	router := chi.NewRouter()
 	router.Use(cors.New(cors.Options{
@@ -50,7 +51,7 @@ func main() {
 	router.Use(gcontext.ConfigMiddleware(AppConfig))
 
 	c := generated.Config{Resolvers: &resolver.Resolver{
-		Domain: domain.NewDomain(userRepo, activityRepo),
+		Domain: domain.NewDomain(userRepo, activityRepo, fileRepo),
 	}}
 
 	queryHander := handler.GraphQL(generated.NewExecutableSchema(c))

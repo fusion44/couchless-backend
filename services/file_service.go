@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -23,18 +22,20 @@ type FileService struct {
 
 // NewFileService creates a new upload service instance
 func NewFileService(config *context.Config, log *logging.Logger) *FileService {
-	p := filepath.Join(config.FileStoragePath, DefaultFITFileDir)
-	_ = os.MkdirAll(p, os.ModePerm)
-	return &FileService{storagePath: p, log: log}
+	return &FileService{storagePath: config.FileStoragePath, log: log}
 }
 
-// PersistFile saves a given file file to the disk
-func (fs *FileService) PersistFile(fileName string, file io.Reader) (*string, error) {
-	filePath := filepath.Join(fs.storagePath, fileName)
+// PersistFile saves a given file to the disk
+func (fs *FileService) PersistFile(fileName, userID string, file io.Reader) (*string, error) {
+	filePath := filepath.Join(fs.storagePath, DefaultFITFileDir, userID)
+	_ = os.MkdirAll(filePath, os.ModePerm)
+
+	filePath = filepath.Join(filePath, fileName)
+
 	f, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666)
 
 	if err != nil {
-		fmt.Println(err)
+		fs.log.Errorf("Unable to open file for writing: %s", err)
 		return nil, err
 	}
 

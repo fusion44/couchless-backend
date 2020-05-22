@@ -18,13 +18,20 @@ var (
 
 // Domain contains all business logic
 type Domain struct {
-	UsersRepo    repositories.UsersRepository
-	ActivityRepo repositories.ActivitiesRepository
+	UsersRepo      repositories.UsersRepository
+	ActivityRepo   repositories.ActivitiesRepository
+	FileRepository repositories.FileDescRepository
 }
 
 // NewDomain creates a new Domain instance
-func NewDomain(usersRepo repositories.UsersRepository, activityRepo repositories.ActivitiesRepository) *Domain {
-	return &Domain{UsersRepo: usersRepo, ActivityRepo: activityRepo}
+func NewDomain(
+	usersRepo repositories.UsersRepository,
+	activityRepo repositories.ActivitiesRepository,
+	fileRepo repositories.FileDescRepository) *Domain {
+	return &Domain{
+		UsersRepo:      usersRepo,
+		ActivityRepo:   activityRepo,
+		FileRepository: fileRepo}
 }
 
 // Ownable makes an object ownable by an user

@@ -37,6 +37,7 @@ type Config struct {
 
 type ResolverRoot interface {
 	Activity() ActivityResolver
+	FileDescriptor() FileDescriptorResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
 }
@@ -65,11 +66,19 @@ type ComplexityRoot struct {
 		ExpiredAt   func(childComplexity int) int
 	}
 
+	FileDescriptor struct {
+		CreatedAt func(childComplexity int) int
+		FileName  func(childComplexity int) int
+		ID        func(childComplexity int) int
+		User      func(childComplexity int) int
+	}
+
 	Mutation struct {
 		AddActivity    func(childComplexity int, input model.NewActivity) int
 		DeleteActivity func(childComplexity int, id string) int
 		Login          func(childComplexity int, input model.LoginInput) int
 		Register       func(childComplexity int, input model.RegisterInput) int
+		SingleUpload   func(childComplexity int, file graphql.Upload) int
 		UpdateActivity func(childComplexity int, input model.UpdateActivity) int
 	}
 
@@ -91,12 +100,16 @@ type ComplexityRoot struct {
 type ActivityResolver interface {
 	User(ctx context.Context, obj *model.Activity) (*model.User, error)
 }
+type FileDescriptorResolver interface {
+	User(ctx context.Context, obj *model.FileDescriptor) (*model.User, error)
+}
 type MutationResolver interface {
 	Register(ctx context.Context, input model.RegisterInput) (*model.AuthResponse, error)
 	Login(ctx context.Context, input model.LoginInput) (*model.AuthResponse, error)
 	AddActivity(ctx context.Context, input model.NewActivity) (*model.Activity, error)
 	UpdateActivity(ctx context.Context, input model.UpdateActivity) (*model.Activity, error)
 	DeleteActivity(ctx context.Context, id string) (bool, error)
+	SingleUpload(ctx context.Context, file graphql.Upload) (*model.FileDescriptor, error)
 }
 type QueryResolver interface {
 	Activity(ctx context.Context, id string) (*model.Activity, error)
@@ -196,6 +209,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AuthToken.ExpiredAt(childComplexity), true
 
+	case "FileDescriptor.createdAt":
+		if e.complexity.FileDescriptor.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.FileDescriptor.CreatedAt(childComplexity), true
+
+	case "FileDescriptor.fileName":
+		if e.complexity.FileDescriptor.FileName == nil {
+			break
+		}
+
+		return e.complexity.FileDescriptor.FileName(childComplexity), true
+
+	case "FileDescriptor.id":
+		if e.complexity.FileDescriptor.ID == nil {
+			break
+		}
+
+		return e.complexity.FileDescriptor.ID(childComplexity), true
+
+	case "FileDescriptor.user":
+		if e.complexity.FileDescriptor.User == nil {
+			break
+		}
+
+		return e.complexity.FileDescriptor.User(childComplexity), true
+
 	case "Mutation.addActivity":
 		if e.complexity.Mutation.AddActivity == nil {
 			break
@@ -243,6 +284,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.Register(childComplexity, args["input"].(model.RegisterInput)), true
+
+	case "Mutation.singleUpload":
+		if e.complexity.Mutation.SingleUpload == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_singleUpload_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SingleUpload(childComplexity, args["file"].(graphql.Upload)), true
 
 	case "Mutation.updateActivity":
 		if e.complexity.Mutation.UpdateActivity == nil {
@@ -392,6 +445,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 
 var sources = []*ast.Source{
 	&ast.Source{Name: "graph/schema.graphql", Input: `scalar Time
+scalar Upload
 
 type AuthToken {
     accessToken: String!
@@ -464,6 +518,23 @@ input UpdateActivity {
     sportType: String
 }
 
+input UploadFile {
+    id: Int!
+    file: Upload!
+}
+
+"The ` + "`" + `FileDescriptor` + "`" + ` type represents a file in the system"
+type FileDescriptor {
+    "The ` + "`" + `id` + "`" + ` is the file id in the database"
+    id: String!
+    "The ` + "`" + `fileName` + "`" + ` is the original name of the file"
+    fileName: String!
+    "The ` + "`" + `user` + "`" + ` is the owner of the file"
+    user: User!
+    "` + "`" + `createdAt` + "`" + ` is the time when the file was uploaded"
+    createdAt: Time!
+}
+
 type Mutation {
     register(input: RegisterInput!): AuthResponse!
     login(input: LoginInput!): AuthResponse!
@@ -471,6 +542,8 @@ type Mutation {
     addActivity(input: NewActivity!): Activity!
     updateActivity(input: UpdateActivity!): Activity!
     deleteActivity(id: ID!): Boolean!
+
+    singleUpload(file: Upload!): FileDescriptor!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -532,6 +605,20 @@ func (ec *executionContext) field_Mutation_register_args(ctx context.Context, ra
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_singleUpload_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 graphql.Upload
+	if tmp, ok := rawArgs["file"]; ok {
+		arg0, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["file"] = arg0
 	return args, nil
 }
 
@@ -1028,6 +1115,142 @@ func (ec *executionContext) _AuthToken_expiredAt(ctx context.Context, field grap
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _FileDescriptor_id(ctx context.Context, field graphql.CollectedField, obj *model.FileDescriptor) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FileDescriptor",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FileDescriptor_fileName(ctx context.Context, field graphql.CollectedField, obj *model.FileDescriptor) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FileDescriptor",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.FileName, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FileDescriptor_user(ctx context.Context, field graphql.CollectedField, obj *model.FileDescriptor) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FileDescriptor",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.FileDescriptor().User(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.User)
+	fc.Result = res
+	return ec.marshalNUser2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _FileDescriptor_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.FileDescriptor) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FileDescriptor",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mutation_register(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -1231,6 +1454,47 @@ func (ec *executionContext) _Mutation_deleteActivity(ctx context.Context, field 
 	res := resTmp.(bool)
 	fc.Result = res
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_singleUpload(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_singleUpload_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().SingleUpload(rctx, args["file"].(graphql.Upload))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.FileDescriptor)
+	fc.Result = res
+	return ec.marshalNFileDescriptor2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐFileDescriptor(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_activity(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2824,6 +3088,30 @@ func (ec *executionContext) unmarshalInputUpdateActivity(ctx context.Context, ob
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUploadFile(ctx context.Context, obj interface{}) (model.UploadFile, error) {
+	var it model.UploadFile
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+			it.ID, err = ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "file":
+			var err error
+			it.File, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -2959,6 +3247,57 @@ func (ec *executionContext) _AuthToken(ctx context.Context, sel ast.SelectionSet
 	return out
 }
 
+var fileDescriptorImplementors = []string{"FileDescriptor"}
+
+func (ec *executionContext) _FileDescriptor(ctx context.Context, sel ast.SelectionSet, obj *model.FileDescriptor) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, fileDescriptorImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("FileDescriptor")
+		case "id":
+			out.Values[i] = ec._FileDescriptor_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "fileName":
+			out.Values[i] = ec._FileDescriptor_fileName(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "user":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._FileDescriptor_user(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "createdAt":
+			out.Values[i] = ec._FileDescriptor_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var mutationImplementors = []string{"Mutation"}
 
 func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -2996,6 +3335,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "deleteActivity":
 			out.Values[i] = ec._Mutation_deleteActivity(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "singleUpload":
+			out.Values[i] = ec._Mutation_singleUpload(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -3467,12 +3811,40 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
+func (ec *executionContext) marshalNFileDescriptor2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐFileDescriptor(ctx context.Context, sel ast.SelectionSet, v model.FileDescriptor) graphql.Marshaler {
+	return ec._FileDescriptor(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNFileDescriptor2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐFileDescriptor(ctx context.Context, sel ast.SelectionSet, v *model.FileDescriptor) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._FileDescriptor(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
 	return graphql.UnmarshalID(v)
 }
 
 func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
 	res := graphql.MarshalID(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
+	return graphql.UnmarshalInt(v)
+}
+
+func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	res := graphql.MarshalInt(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -3523,6 +3895,20 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 
 func (ec *executionContext) unmarshalNUpdateActivity2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUpdateActivity(ctx context.Context, v interface{}) (model.UpdateActivity, error) {
 	return ec.unmarshalInputUpdateActivity(ctx, v)
+}
+
+func (ec *executionContext) unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, v interface{}) (graphql.Upload, error) {
+	return graphql.UnmarshalUpload(v)
+}
+
+func (ec *executionContext) marshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, sel ast.SelectionSet, v graphql.Upload) graphql.Marshaler {
+	res := graphql.MarshalUpload(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
 }
 
 func (ec *executionContext) marshalNUser2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {

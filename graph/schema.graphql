@@ -77,6 +77,18 @@ input UploadFile {
     file: Upload!
 }
 
+"The `FileDescriptor` type represents a file in the system"
+type FileDescriptor {
+    "The `id` is the file id in the database"
+    id: String!
+    "The `fileName` is the original name of the file"
+    fileName: String!
+    "The `user` is the owner of the file"
+    user: User!
+    "`createdAt` is the time when the file was uploaded"
+    createdAt: Time!
+}
+
 type Mutation {
     register(input: RegisterInput!): AuthResponse!
     login(input: LoginInput!): AuthResponse!
@@ -85,6 +97,5 @@ type Mutation {
     updateActivity(input: UpdateActivity!): Activity!
     deleteActivity(id: ID!): Boolean!
 
-    singleUpload(file: Upload!): Boolean!
-    multipleUpload(req: [UploadFile!]!): [Boolean!]!
+    singleUpload(file: Upload!): FileDescriptor!
 }
