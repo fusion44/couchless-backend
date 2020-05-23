@@ -87,6 +87,11 @@ type FileDescriptor {
     user: User!
     "`createdAt` is the time when the file was uploaded"
     createdAt: Time!
+    """
+    `contentType` is the file type of content this file contains.
+    Supported options: image, fit
+    """
+    contentType: String!
 }
 
 type Mutation {

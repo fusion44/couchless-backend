@@ -34,9 +34,10 @@ func (d *Domain) HandleSingleFileUpload(ctx context.Context, file graphql.Upload
 
 	if strings.HasSuffix(file.Filename, ".FIT") {
 		// Store the file descriptor to the DB
-		f, err := d.FileRepository.AddFileDescriptor(&model.FileDescriptor{
-			FileName: file.Filename,
-			UserID:   u.ID,
+		fileDesc, err := d.FileRepository.AddFileDescriptor(&model.FileDescriptor{
+			FileName:    file.Filename,
+			UserID:      u.ID,
+			ContentType: model.ContentTypeFIT,
 		})
 
 		if err != nil {
@@ -45,11 +46,11 @@ func (d *Domain) HandleSingleFileUpload(ctx context.Context, file graphql.Upload
 		}
 
 		fileService := service.NewFileService(cfg, l)
-		filePath, persistErr := fileService.PersistFile(file.Filename, u.ID, file.File)
+		filePath, persistErr := fileService.PersistFile(fileDesc, file.File)
 		if persistErr != nil {
 			l.Errorf("Unable to store file: %s\nRemoving file descriptor", filePath)
 			// Delete the file descriptor as it's in the DB already
-			f, err = d.FileRepository.DeleteFileDescriptor(f)
+			_, err = d.FileRepository.DeleteFileDescriptor(fileDesc)
 
 			if err != nil {
 				l.Errorf("Unable to delete file descriptor: %s", err)
@@ -59,7 +60,7 @@ func (d *Domain) HandleSingleFileUpload(ctx context.Context, file graphql.Upload
 
 		}
 
-		return f, nil
+		return fileDesc, nil
 	}
 
 	// If we are here we didn't recognize the file type.

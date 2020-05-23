@@ -6,12 +6,8 @@ import (
 	"path/filepath"
 
 	"github.com/fusion44/ll-backend/context"
+	"github.com/fusion44/ll-backend/graph/model"
 	"github.com/op/go-logging"
-)
-
-const (
-	// DefaultFITFileDir the directory where fit files will be stored
-	DefaultFITFileDir = "fit"
 )
 
 // FileService handles all file operations
@@ -26,11 +22,15 @@ func NewFileService(config *context.Config, log *logging.Logger) *FileService {
 }
 
 // PersistFile saves a given file to the disk
-func (fs *FileService) PersistFile(fileName, userID string, file io.Reader) (*string, error) {
-	filePath := filepath.Join(fs.storagePath, DefaultFITFileDir, userID)
+func (fs *FileService) PersistFile(fileDesc *model.FileDescriptor, file io.Reader) (*string, error) {
+	filePath, err := fileDesc.GetStoragePath(fs.storagePath)
+	if err != nil {
+		fs.log.Errorf("Unable to get full file path: %s", err)
+		return nil, err
+	}
 	_ = os.MkdirAll(filePath, os.ModePerm)
 
-	filePath = filepath.Join(filePath, fileName)
+	filePath = filepath.Join(filePath, fileDesc.FileName)
 
 	f, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666)
 

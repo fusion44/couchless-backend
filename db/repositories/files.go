@@ -16,6 +16,18 @@ func (r *FileDescRepository) AddFileDescriptor(file *model.FileDescriptor) (*mod
 	return file, err
 }
 
+// GetFileDescriptorByID returns the file descriptor for the given ID
+func (r *FileDescRepository) GetFileDescriptorByID(id string) (*model.FileDescriptor, error) {
+	var descr model.FileDescriptor
+	err := r.DB.Model(&descr).Where("id = ?", id).First()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &descr, nil
+}
+
 // DeleteFileDescriptor deletes a file descriptor from the database
 func (r *FileDescRepository) DeleteFileDescriptor(file *model.FileDescriptor) (*model.FileDescriptor, error) {
 	_, err := r.DB.Model(file).Where("id = ?", file.ID).Delete()
