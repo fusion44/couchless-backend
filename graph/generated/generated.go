@@ -67,15 +67,17 @@ type ComplexityRoot struct {
 	}
 
 	FileDescriptor struct {
-		CreatedAt func(childComplexity int) int
-		FileName  func(childComplexity int) int
-		ID        func(childComplexity int) int
-		User      func(childComplexity int) int
+		ContentType func(childComplexity int) int
+		CreatedAt   func(childComplexity int) int
+		FileName    func(childComplexity int) int
+		ID          func(childComplexity int) int
+		User        func(childComplexity int) int
 	}
 
 	Mutation struct {
 		AddActivity    func(childComplexity int, input model.NewActivity) int
 		DeleteActivity func(childComplexity int, id string) int
+		ImportActivity func(childComplexity int, input model.ImportActivity) int
 		Login          func(childComplexity int, input model.LoginInput) int
 		Register       func(childComplexity int, input model.RegisterInput) int
 		SingleUpload   func(childComplexity int, file graphql.Upload) int
@@ -107,6 +109,7 @@ type MutationResolver interface {
 	Register(ctx context.Context, input model.RegisterInput) (*model.AuthResponse, error)
 	Login(ctx context.Context, input model.LoginInput) (*model.AuthResponse, error)
 	AddActivity(ctx context.Context, input model.NewActivity) (*model.Activity, error)
+	ImportActivity(ctx context.Context, input model.ImportActivity) (*model.Activity, error)
 	UpdateActivity(ctx context.Context, input model.UpdateActivity) (*model.Activity, error)
 	DeleteActivity(ctx context.Context, id string) (bool, error)
 	SingleUpload(ctx context.Context, file graphql.Upload) (*model.FileDescriptor, error)
@@ -209,6 +212,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AuthToken.ExpiredAt(childComplexity), true
 
+	case "FileDescriptor.contentType":
+		if e.complexity.FileDescriptor.ContentType == nil {
+			break
+		}
+
+		return e.complexity.FileDescriptor.ContentType(childComplexity), true
+
 	case "FileDescriptor.createdAt":
 		if e.complexity.FileDescriptor.CreatedAt == nil {
 			break
@@ -260,6 +270,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteActivity(childComplexity, args["id"].(string)), true
+
+	case "Mutation.importActivity":
+		if e.complexity.Mutation.ImportActivity == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_importActivity_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ImportActivity(childComplexity, args["input"].(model.ImportActivity)), true
 
 	case "Mutation.login":
 		if e.complexity.Mutation.Login == nil {
@@ -482,17 +504,17 @@ input LoginInput {
 
 type Activity {
     id: ID!
-    createdAt: String!
-    startTime: String!
-    endTime: String!
+    createdAt: Time!
+    startTime: Time!
+    endTime: Time!
     comment: String
     sportType: String!
     user: User!
 }
 
 input ActivityFilter {
-    startTime: String
-    endTime: String
+    startTime: Time
+    endTime: Time
     comment: String
     sportType: String
 }
@@ -504,18 +526,26 @@ type Query {
 }
 
 input NewActivity {
-    startTime: String!
-    endTime:String!
+    startTime: Time!
+    endTime: Time!
     comment: String
     sportType: String!
 }
 
 input UpdateActivity {
     id: ID!
-    startTime: String
-    endTime:String
+    startTime: Time
+    endTime:Time
     comment: String
     sportType: String
+}
+
+"The ` + "`" + `ImportActivity` + "`" + ` input represents a to imported activity"
+input ImportActivity {
+    "The ` + "`" + `fileID` + "`" + ` is the ID of a ` + "`" + `FileDescriptor` + "`" + `"
+    fileID: ID!
+    "The ` + "`" + `comment` + "`" + ` is an optional comment to be added to the activity"
+    comment: String
 }
 
 input UploadFile {
@@ -533,6 +563,11 @@ type FileDescriptor {
     user: User!
     "` + "`" + `createdAt` + "`" + ` is the time when the file was uploaded"
     createdAt: Time!
+    """
+    ` + "`" + `contentType` + "`" + ` is the file type of content this file contains.
+    Supported options: image, fit
+    """
+    contentType: String!
 }
 
 type Mutation {
@@ -540,6 +575,7 @@ type Mutation {
     login(input: LoginInput!): AuthResponse!
 
     addActivity(input: NewActivity!): Activity!
+    importActivity(input: ImportActivity!): Activity!
     updateActivity(input: UpdateActivity!): Activity!
     deleteActivity(id: ID!): Boolean!
 
@@ -577,6 +613,20 @@ func (ec *executionContext) field_Mutation_deleteActivity_args(ctx context.Conte
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_importActivity_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.ImportActivity
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNImportActivity2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐImportActivity(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -807,9 +857,9 @@ func (ec *executionContext) _Activity_createdAt(ctx context.Context, field graph
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(time.Time)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Activity_startTime(ctx context.Context, field graphql.CollectedField, obj *model.Activity) (ret graphql.Marshaler) {
@@ -841,9 +891,9 @@ func (ec *executionContext) _Activity_startTime(ctx context.Context, field graph
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(time.Time)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Activity_endTime(ctx context.Context, field graphql.CollectedField, obj *model.Activity) (ret graphql.Marshaler) {
@@ -875,9 +925,9 @@ func (ec *executionContext) _Activity_endTime(ctx context.Context, field graphql
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(time.Time)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Activity_comment(ctx context.Context, field graphql.CollectedField, obj *model.Activity) (ret graphql.Marshaler) {
@@ -1251,6 +1301,40 @@ func (ec *executionContext) _FileDescriptor_createdAt(ctx context.Context, field
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _FileDescriptor_contentType(ctx context.Context, field graphql.CollectedField, obj *model.FileDescriptor) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "FileDescriptor",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ContentType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mutation_register(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -1358,6 +1442,47 @@ func (ec *executionContext) _Mutation_addActivity(ctx context.Context, field gra
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().AddActivity(rctx, args["input"].(model.NewActivity))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Activity)
+	fc.Result = res
+	return ec.marshalNActivity2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivity(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_importActivity(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_importActivity_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ImportActivity(rctx, args["input"].(model.ImportActivity))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2922,13 +3047,13 @@ func (ec *executionContext) unmarshalInputActivityFilter(ctx context.Context, ob
 		switch k {
 		case "startTime":
 			var err error
-			it.StartTime, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.StartTime, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "endTime":
 			var err error
-			it.EndTime, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.EndTime, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2941,6 +3066,30 @@ func (ec *executionContext) unmarshalInputActivityFilter(ctx context.Context, ob
 		case "sportType":
 			var err error
 			it.SportType, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputImportActivity(ctx context.Context, obj interface{}) (model.ImportActivity, error) {
+	var it model.ImportActivity
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "fileID":
+			var err error
+			it.FileID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "comment":
+			var err error
+			it.Comment, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2982,13 +3131,13 @@ func (ec *executionContext) unmarshalInputNewActivity(ctx context.Context, obj i
 		switch k {
 		case "startTime":
 			var err error
-			it.StartTime, err = ec.unmarshalNString2string(ctx, v)
+			it.StartTime, err = ec.unmarshalNTime2timeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "endTime":
 			var err error
-			it.EndTime, err = ec.unmarshalNString2string(ctx, v)
+			it.EndTime, err = ec.unmarshalNTime2timeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3060,13 +3209,13 @@ func (ec *executionContext) unmarshalInputUpdateActivity(ctx context.Context, ob
 			}
 		case "startTime":
 			var err error
-			it.StartTime, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.StartTime, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "endTime":
 			var err error
-			it.EndTime, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.EndTime, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3287,6 +3436,11 @@ func (ec *executionContext) _FileDescriptor(ctx context.Context, sel ast.Selecti
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
+		case "contentType":
+			out.Values[i] = ec._FileDescriptor_contentType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3325,6 +3479,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "addActivity":
 			out.Values[i] = ec._Mutation_addActivity(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "importActivity":
+			out.Values[i] = ec._Mutation_importActivity(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -3839,6 +3998,10 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
+func (ec *executionContext) unmarshalNImportActivity2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐImportActivity(ctx context.Context, v interface{}) (model.ImportActivity, error) {
+	return ec.unmarshalInputImportActivity(ctx, v)
+}
+
 func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
 	return graphql.UnmarshalInt(v)
 }
@@ -4230,6 +4393,29 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 		return graphql.Null
 	}
 	return ec.marshalOString2string(ctx, sel, *v)
+}
+
+func (ec *executionContext) unmarshalOTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {
+	return graphql.UnmarshalTime(v)
+}
+
+func (ec *executionContext) marshalOTime2timeᚐTime(ctx context.Context, sel ast.SelectionSet, v time.Time) graphql.Marshaler {
+	return graphql.MarshalTime(v)
+}
+
+func (ec *executionContext) unmarshalOTime2ᚖtimeᚐTime(ctx context.Context, v interface{}) (*time.Time, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOTime2timeᚐTime(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel ast.SelectionSet, v *time.Time) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec.marshalOTime2timeᚐTime(ctx, sel, *v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

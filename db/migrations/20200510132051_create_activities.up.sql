@@ -1,6 +1,7 @@
 CREATE TABLE activities
 (
   id BIGSERIAL PRIMARY KEY,
+  input_type VARCHAR(45), -- e.g.: 'manual', 'recorded', 'imported'
   sport_type VARCHAR(45),
   comment TEXT,
   start_time TIMESTAMP NOT NULL,

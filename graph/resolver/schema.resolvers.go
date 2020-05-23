@@ -45,6 +45,10 @@ func (r *mutationResolver) AddActivity(ctx context.Context, input model.NewActiv
 	return r.Domain.AddActivity(ctx, input)
 }
 
+func (r *mutationResolver) ImportActivity(ctx context.Context, input model.ImportActivity) (*model.Activity, error) {
+	return r.Domain.ImportActivity(ctx, input)
+}
+
 func (r *mutationResolver) UpdateActivity(ctx context.Context, input model.UpdateActivity) (*model.Activity, error) {
 	return r.Domain.UpdateActivity(ctx, input)
 }

@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"log"
 
+	gcontext "github.com/fusion44/ll-backend/context"
 	"github.com/fusion44/ll-backend/graph/model"
 	"github.com/fusion44/ll-backend/middleware"
+	service "github.com/fusion44/ll-backend/services"
 )
 
 // GetActivities returns the filtered activities for the current user
@@ -65,6 +67,75 @@ func (d *Domain) AddActivity(ctx context.Context, input model.NewActivity) (*mod
 		UserID:    u.ID,
 	}
 	return d.ActivityRepo.AddActivity(&activity)
+}
+
+// ImportActivity adds a new Activity to the database for current user
+func (d *Domain) ImportActivity(ctx context.Context, input model.ImportActivity) (*model.Activity, error) {
+	logger, _ := middleware.GetLoggerFromContext(ctx)
+	cfg, _ := gcontext.GetConfigFromContext(ctx)
+
+	u, err := middleware.GetCurrentUserFromContext(ctx)
+	if err != nil {
+		return nil, ErrUnauthenticated
+	}
+
+	descr, err := d.FileRepository.GetFileDescriptorByID(input.FileID)
+
+	// 1. Check if there is a file descriptor in the DB with the given ID
+	if err != nil || descr == nil {
+		return nil, errors.New("File descriptor does not exist")
+	}
+
+	// 2. Check if the user is the owner of this file
+	if !descr.IsOwner(u) {
+		return nil, ErrUnauthorized
+	}
+
+	// 3. Check if there is no other activity referencing this file already (avoid double imports)
+	activities, err := d.ActivityRepo.GetActivitiesByFileID(input.FileID)
+	if err != nil {
+		logger.Errorf("Unable to query activities by FileDescriptor: %s", err)
+		return nil, ErrInternalServer
+	}
+
+	if activities != nil {
+		return nil, ErrDuplicateActivityForFile
+	}
+
+	// 4. Convert the file to JSON
+	converterService := service.NewConverterService(cfg, logger)
+	p, _ := descr.GetFilePath(cfg.FileStoragePath)
+	jsonFilePath, err := converterService.ConvertFITtoJSON(u, p)
+	if err != nil {
+		logger.Errorf("Unable to convert file: %s", jsonFilePath)
+		return nil, err
+	}
+
+	// 5. Read the JSON file into an activity object
+	// TODO: import location data
+	importerService := service.NewImporterService(logger)
+	res, err := importerService.ImportFITJSON(jsonFilePath)
+	if err != nil {
+		logger.Errorf("Unable to process file: %s", jsonFilePath)
+		logger.Errorf("Error: %s", err)
+		return nil, ErrInvalidInput
+	}
+
+	// 6. Add custom information from user
+	activity := res.Activity
+	activity.Comment = *input.Comment
+	activity.UserID = u.ID
+	activity.FileID = input.FileID
+	activity.InputType = model.Imported
+
+	// 7. Store the activity file to the DB
+	newActivity, err := d.ActivityRepo.AddActivity(&activity)
+	if err != nil {
+		logger.Errorf("Unable to save activity to DB: ", err)
+		return nil, ErrUnableToProcess
+	}
+
+	return newActivity, nil
 }
 
 // UpdateActivity updates an Activity if the user is logged is

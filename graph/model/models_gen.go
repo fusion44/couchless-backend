@@ -9,10 +9,10 @@ import (
 )
 
 type ActivityFilter struct {
-	StartTime *string `json:"startTime"`
-	EndTime   *string `json:"endTime"`
-	Comment   *string `json:"comment"`
-	SportType *string `json:"sportType"`
+	StartTime *time.Time `json:"startTime"`
+	EndTime   *time.Time `json:"endTime"`
+	Comment   *string    `json:"comment"`
+	SportType *string    `json:"sportType"`
 }
 
 type AuthResponse struct {
@@ -25,6 +25,14 @@ type AuthToken struct {
 	ExpiredAt   time.Time `json:"expiredAt"`
 }
 
+// The `ImportActivity` input represents a to imported activity
+type ImportActivity struct {
+	// The `fileID` is the ID of a `FileDescriptor`
+	FileID string `json:"fileID"`
+	// The `comment` is an optional comment to be added to the activity
+	Comment *string `json:"comment"`
+}
+
 // The `LoginInput` type represents the required login input
 type LoginInput struct {
 	// The `username` can either be an email or the actual username
@@ -34,10 +42,10 @@ type LoginInput struct {
 }
 
 type NewActivity struct {
-	StartTime string  `json:"startTime"`
-	EndTime   string  `json:"endTime"`
-	Comment   *string `json:"comment"`
-	SportType string  `json:"sportType"`
+	StartTime time.Time `json:"startTime"`
+	EndTime   time.Time `json:"endTime"`
+	Comment   *string   `json:"comment"`
+	SportType string    `json:"sportType"`
 }
 
 type RegisterInput struct {
@@ -48,11 +56,11 @@ type RegisterInput struct {
 }
 
 type UpdateActivity struct {
-	ID        string  `json:"id"`
-	StartTime *string `json:"startTime"`
-	EndTime   *string `json:"endTime"`
-	Comment   *string `json:"comment"`
-	SportType *string `json:"sportType"`
+	ID        string     `json:"id"`
+	StartTime *time.Time `json:"startTime"`
+	EndTime   *time.Time `json:"endTime"`
+	Comment   *string    `json:"comment"`
+	SportType *string    `json:"sportType"`
 }
 
 type UploadFile struct {

@@ -9,11 +9,13 @@ import (
 
 // App errors
 var (
-	ErrBadCredentials  = errors.New("Login credentials not valid")
-	ErrUnauthenticated = errors.New("Unauthenticated")
-	ErrUnauthorized    = errors.New("Unauthorized")
-	ErrInternalServer  = errors.New("Internal server error")
-	ErrInvalidInput    = errors.New("Input not valid")
+	ErrBadCredentials           = errors.New("Login credentials not valid")
+	ErrUnauthenticated          = errors.New("Unauthenticated")
+	ErrUnauthorized             = errors.New("Unauthorized")
+	ErrInternalServer           = errors.New("Internal server error")
+	ErrInvalidInput             = errors.New("Input not valid")
+	ErrUnableToProcess          = errors.New("Unable to process FIT file")
+	ErrDuplicateActivityForFile = errors.New("Duplicate activity for FIT file")
 )
 
 // Domain contains all business logic
