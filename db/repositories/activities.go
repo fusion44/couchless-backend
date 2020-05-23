@@ -12,6 +12,13 @@ type ActivitiesRepository struct {
 	DB *pg.DB
 }
 
+// GetActivitiesByField returns the user for the given field
+func (r *ActivitiesRepository) GetActivitiesByField(field, value string) ([]*model.Activity, error) {
+	var activity []*model.Activity
+	err := r.DB.Model(&activity).Where(fmt.Sprintf("%v = ?", field), value).Select()
+	return activity, err
+}
+
 // GetActivityByID returns the activity for the given ID
 func (r *ActivitiesRepository) GetActivityByID(id string) (*model.Activity, error) {
 	var activity model.Activity
@@ -22,6 +29,18 @@ func (r *ActivitiesRepository) GetActivityByID(id string) (*model.Activity, erro
 	}
 
 	return &activity, nil
+}
+
+// GetActivitiesByFileID gets an activity for the given file ID
+func (r *ActivitiesRepository) GetActivitiesByFileID(fileID string) ([]*model.Activity, error) {
+	var activities []*model.Activity
+	err := r.DB.Model(&activities).Where("file_id = ?", fileID).Select()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return activities, nil
 }
 
 // DeleteActivity deletes the given activity
