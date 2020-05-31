@@ -100,3 +100,21 @@ func (r *ActivitiesRepository) UpdateActivity(activity *model.Activity) (*model.
 	_, err := r.DB.Model(activity).Where("id = ?", activity.ID).Returning("*").Update()
 	return activity, err
 }
+
+// AddActivityRecords inserts activity records to the database
+func (r *ActivitiesRepository) AddActivityRecords(records []*model.ActivityRecord) ([]*model.ActivityRecord, error) {
+	_, err := r.DB.Model(&records).Returning("*").Insert(&records)
+	return records, err
+}
+
+// GetActivityRecords gets records for the given activity
+func (r *ActivitiesRepository) GetActivityRecords(activityID string, preloads []string) ([]*model.ActivityRecord, error) {
+	var records []*model.ActivityRecord
+	err := r.DB.Model(&records).Column(preloads...).Where("activity_id = ?", activityID).Select()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return records, nil
+}

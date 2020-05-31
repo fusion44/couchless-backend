@@ -17,6 +17,11 @@ func (r *activityResolver) User(ctx context.Context, obj *model.Activity) (*mode
 	return loader.GetUserLoader(ctx).Load(obj.UserID)
 }
 
+func (r *activityResolver) Records(ctx context.Context, obj *model.Activity) ([]*model.ActivityRecord, error) {
+	preloads := GetPreloads(ctx)
+	return r.Domain.GetActivityRecords(ctx, obj, preloads)
+}
+
 func (r *fileDescriptorResolver) User(ctx context.Context, obj *model.FileDescriptor) (*model.User, error) {
 	return loader.GetUserLoader(ctx).Load(obj.UserID)
 }

@@ -51,9 +51,31 @@ type ComplexityRoot struct {
 		CreatedAt func(childComplexity int) int
 		EndTime   func(childComplexity int) int
 		ID        func(childComplexity int) int
+		Records   func(childComplexity int) int
 		SportType func(childComplexity int) int
 		StartTime func(childComplexity int) int
 		User      func(childComplexity int) int
+	}
+
+	ActivityRecord struct {
+		AccumulatedPower  func(childComplexity int) int
+		ActivityID        func(childComplexity int) int
+		Altitude          func(childComplexity int) int
+		Cadence           func(childComplexity int) int
+		CycleLength       func(childComplexity int) int
+		Distance          func(childComplexity int) int
+		FractionalCadence func(childComplexity int) int
+		Grade             func(childComplexity int) int
+		HeartRate         func(childComplexity int) int
+		ID                func(childComplexity int) int
+		PositionLat       func(childComplexity int) int
+		PositionLong      func(childComplexity int) int
+		Power             func(childComplexity int) int
+		Resistance        func(childComplexity int) int
+		Speed             func(childComplexity int) int
+		Temperature       func(childComplexity int) int
+		TimeFromCourse    func(childComplexity int) int
+		Timestamp         func(childComplexity int) int
 	}
 
 	AuthResponse struct {
@@ -101,6 +123,7 @@ type ComplexityRoot struct {
 
 type ActivityResolver interface {
 	User(ctx context.Context, obj *model.Activity) (*model.User, error)
+	Records(ctx context.Context, obj *model.Activity) ([]*model.ActivityRecord, error)
 }
 type FileDescriptorResolver interface {
 	User(ctx context.Context, obj *model.FileDescriptor) (*model.User, error)
@@ -163,6 +186,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Activity.ID(childComplexity), true
 
+	case "Activity.records":
+		if e.complexity.Activity.Records == nil {
+			break
+		}
+
+		return e.complexity.Activity.Records(childComplexity), true
+
 	case "Activity.sportType":
 		if e.complexity.Activity.SportType == nil {
 			break
@@ -183,6 +213,132 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Activity.User(childComplexity), true
+
+	case "ActivityRecord.accumulatedPower":
+		if e.complexity.ActivityRecord.AccumulatedPower == nil {
+			break
+		}
+
+		return e.complexity.ActivityRecord.AccumulatedPower(childComplexity), true
+
+	case "ActivityRecord.activityId":
+		if e.complexity.ActivityRecord.ActivityID == nil {
+			break
+		}
+
+		return e.complexity.ActivityRecord.ActivityID(childComplexity), true
+
+	case "ActivityRecord.altitude":
+		if e.complexity.ActivityRecord.Altitude == nil {
+			break
+		}
+
+		return e.complexity.ActivityRecord.Altitude(childComplexity), true
+
+	case "ActivityRecord.cadence":
+		if e.complexity.ActivityRecord.Cadence == nil {
+			break
+		}
+
+		return e.complexity.ActivityRecord.Cadence(childComplexity), true
+
+	case "ActivityRecord.cycleLength":
+		if e.complexity.ActivityRecord.CycleLength == nil {
+			break
+		}
+
+		return e.complexity.ActivityRecord.CycleLength(childComplexity), true
+
+	case "ActivityRecord.distance":
+		if e.complexity.ActivityRecord.Distance == nil {
+			break
+		}
+
+		return e.complexity.ActivityRecord.Distance(childComplexity), true
+
+	case "ActivityRecord.fractionalCadence":
+		if e.complexity.ActivityRecord.FractionalCadence == nil {
+			break
+		}
+
+		return e.complexity.ActivityRecord.FractionalCadence(childComplexity), true
+
+	case "ActivityRecord.grade":
+		if e.complexity.ActivityRecord.Grade == nil {
+			break
+		}
+
+		return e.complexity.ActivityRecord.Grade(childComplexity), true
+
+	case "ActivityRecord.heartRate":
+		if e.complexity.ActivityRecord.HeartRate == nil {
+			break
+		}
+
+		return e.complexity.ActivityRecord.HeartRate(childComplexity), true
+
+	case "ActivityRecord.id":
+		if e.complexity.ActivityRecord.ID == nil {
+			break
+		}
+
+		return e.complexity.ActivityRecord.ID(childComplexity), true
+
+	case "ActivityRecord.positionLat":
+		if e.complexity.ActivityRecord.PositionLat == nil {
+			break
+		}
+
+		return e.complexity.ActivityRecord.PositionLat(childComplexity), true
+
+	case "ActivityRecord.positionLong":
+		if e.complexity.ActivityRecord.PositionLong == nil {
+			break
+		}
+
+		return e.complexity.ActivityRecord.PositionLong(childComplexity), true
+
+	case "ActivityRecord.power":
+		if e.complexity.ActivityRecord.Power == nil {
+			break
+		}
+
+		return e.complexity.ActivityRecord.Power(childComplexity), true
+
+	case "ActivityRecord.resistance":
+		if e.complexity.ActivityRecord.Resistance == nil {
+			break
+		}
+
+		return e.complexity.ActivityRecord.Resistance(childComplexity), true
+
+	case "ActivityRecord.speed":
+		if e.complexity.ActivityRecord.Speed == nil {
+			break
+		}
+
+		return e.complexity.ActivityRecord.Speed(childComplexity), true
+
+	case "ActivityRecord.temperature":
+		if e.complexity.ActivityRecord.Temperature == nil {
+			break
+		}
+
+		return e.complexity.ActivityRecord.Temperature(childComplexity), true
+
+	case "ActivityRecord.timeFromCourse":
+		if e.complexity.ActivityRecord.TimeFromCourse == nil {
+			break
+		}
+
+		return e.complexity.ActivityRecord.TimeFromCourse(childComplexity), true
+
+	case "ActivityRecord.timestamp":
+		if e.complexity.ActivityRecord.Timestamp == nil {
+			break
+		}
+
+		return e.complexity.ActivityRecord.Timestamp(childComplexity), true
 
 	case "AuthResponse.authToken":
 		if e.complexity.AuthResponse.AuthToken == nil {
@@ -510,6 +666,47 @@ type Activity {
     comment: String
     sportType: String!
     user: User!
+    records: [ActivityRecord!]!
+}
+
+"The ` + "`" + `ActivityRecord` + "`" + ` type is a  timestamped and geo located data record for an activity"
+type ActivityRecord {
+    "The ` + "`" + `id` + "`" + ` is the file id in the database"
+    id: ID!
+    "The ` + "`" + `activityId` + "`" + ` is the activity id in the database"
+	activityId: ID!
+    "The ` + "`" + `timestamp` + "`" + ` is the time when the entry was recorded"
+	timestamp: Time
+    "The ` + "`" + `positionLat` + "`" + ` the latitude component of the coordinate"
+	positionLat: Int
+    "The ` + "`" + `positionLong` + "`" + ` the longitude component of the coordinate"
+	positionLong: Int
+    "The ` + "`" + `distance` + "`" + ` is the traveled distance since beginning of the activity"
+	distance: Float
+    "The ` + "`" + `timeFromCourse` + "`" + ` is the time difference to the current course"
+	timeFromCourse: Int
+    "The ` + "`" + `heartRate` + "`" + ` is heart rate at the time of recording"
+	heartRate: Int
+    "The ` + "`" + `altitude` + "`" + ` is altitude at the time of recording"
+	altitude: Float
+    "The ` + "`" + `speed` + "`" + ` is speed at the time of recording"
+	speed: Float
+    "The ` + "`" + `power` + "`" + ` is power at the time of recording"
+	power: Int
+    "The ` + "`" + `grade` + "`" + ` is grade at the time of recording"
+	grade: Int
+    "The ` + "`" + `cadence` + "`" + ` is cadence at the time of recording"
+	cadence: Int
+    "The ` + "`" + `fractionalCadence` + "`" + ` is fractionalCadence at the time of recording"
+	fractionalCadence: Int
+    "The ` + "`" + `resistance` + "`" + ` is resistance at the time of recording"
+	resistance: Int
+    "The ` + "`" + `cycleLength` + "`" + ` is cycleLength at the time of recording"
+	cycleLength: Int
+    "The ` + "`" + `temperature` + "`" + ` is temperature at the time of recording"
+	temperature: Int
+    "The ` + "`" + `accumulatedPower` + "`" + ` is accumulatedPower at the time of recording"
+	accumulatedPower: Int
 }
 
 input ActivityFilter {
@@ -1027,6 +1224,604 @@ func (ec *executionContext) _Activity_user(ctx context.Context, field graphql.Co
 	res := resTmp.(*model.User)
 	fc.Result = res
 	return ec.marshalNUser2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Activity_records(ctx context.Context, field graphql.CollectedField, obj *model.Activity) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Activity",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Activity().Records(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.ActivityRecord)
+	fc.Result = res
+	return ec.marshalNActivityRecord2ᚕᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityRecordᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ActivityRecord_id(ctx context.Context, field graphql.CollectedField, obj *model.ActivityRecord) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ActivityRecord",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ActivityRecord_activityId(ctx context.Context, field graphql.CollectedField, obj *model.ActivityRecord) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ActivityRecord",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ActivityID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ActivityRecord_timestamp(ctx context.Context, field graphql.CollectedField, obj *model.ActivityRecord) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ActivityRecord",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Timestamp, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalOTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ActivityRecord_positionLat(ctx context.Context, field graphql.CollectedField, obj *model.ActivityRecord) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ActivityRecord",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PositionLat, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalOInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ActivityRecord_positionLong(ctx context.Context, field graphql.CollectedField, obj *model.ActivityRecord) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ActivityRecord",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PositionLong, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalOInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ActivityRecord_distance(ctx context.Context, field graphql.CollectedField, obj *model.ActivityRecord) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ActivityRecord",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Distance, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalOFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ActivityRecord_timeFromCourse(ctx context.Context, field graphql.CollectedField, obj *model.ActivityRecord) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ActivityRecord",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TimeFromCourse, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalOInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ActivityRecord_heartRate(ctx context.Context, field graphql.CollectedField, obj *model.ActivityRecord) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ActivityRecord",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.HeartRate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalOInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ActivityRecord_altitude(ctx context.Context, field graphql.CollectedField, obj *model.ActivityRecord) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ActivityRecord",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Altitude, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalOFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ActivityRecord_speed(ctx context.Context, field graphql.CollectedField, obj *model.ActivityRecord) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ActivityRecord",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Speed, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalOFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ActivityRecord_power(ctx context.Context, field graphql.CollectedField, obj *model.ActivityRecord) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ActivityRecord",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Power, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalOInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ActivityRecord_grade(ctx context.Context, field graphql.CollectedField, obj *model.ActivityRecord) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ActivityRecord",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Grade, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalOInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ActivityRecord_cadence(ctx context.Context, field graphql.CollectedField, obj *model.ActivityRecord) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ActivityRecord",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cadence, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalOInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ActivityRecord_fractionalCadence(ctx context.Context, field graphql.CollectedField, obj *model.ActivityRecord) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ActivityRecord",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.FractionalCadence, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalOInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ActivityRecord_resistance(ctx context.Context, field graphql.CollectedField, obj *model.ActivityRecord) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ActivityRecord",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Resistance, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalOInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ActivityRecord_cycleLength(ctx context.Context, field graphql.CollectedField, obj *model.ActivityRecord) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ActivityRecord",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CycleLength, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalOInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ActivityRecord_temperature(ctx context.Context, field graphql.CollectedField, obj *model.ActivityRecord) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ActivityRecord",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Temperature, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalOInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ActivityRecord_accumulatedPower(ctx context.Context, field graphql.CollectedField, obj *model.ActivityRecord) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ActivityRecord",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AccumulatedPower, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalOInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _AuthResponse_authToken(ctx context.Context, field graphql.CollectedField, obj *model.AuthResponse) (ret graphql.Marshaler) {
@@ -3321,6 +4116,84 @@ func (ec *executionContext) _Activity(ctx context.Context, sel ast.SelectionSet,
 				}
 				return res
 			})
+		case "records":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Activity_records(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var activityRecordImplementors = []string{"ActivityRecord"}
+
+func (ec *executionContext) _ActivityRecord(ctx context.Context, sel ast.SelectionSet, obj *model.ActivityRecord) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, activityRecordImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ActivityRecord")
+		case "id":
+			out.Values[i] = ec._ActivityRecord_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "activityId":
+			out.Values[i] = ec._ActivityRecord_activityId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "timestamp":
+			out.Values[i] = ec._ActivityRecord_timestamp(ctx, field, obj)
+		case "positionLat":
+			out.Values[i] = ec._ActivityRecord_positionLat(ctx, field, obj)
+		case "positionLong":
+			out.Values[i] = ec._ActivityRecord_positionLong(ctx, field, obj)
+		case "distance":
+			out.Values[i] = ec._ActivityRecord_distance(ctx, field, obj)
+		case "timeFromCourse":
+			out.Values[i] = ec._ActivityRecord_timeFromCourse(ctx, field, obj)
+		case "heartRate":
+			out.Values[i] = ec._ActivityRecord_heartRate(ctx, field, obj)
+		case "altitude":
+			out.Values[i] = ec._ActivityRecord_altitude(ctx, field, obj)
+		case "speed":
+			out.Values[i] = ec._ActivityRecord_speed(ctx, field, obj)
+		case "power":
+			out.Values[i] = ec._ActivityRecord_power(ctx, field, obj)
+		case "grade":
+			out.Values[i] = ec._ActivityRecord_grade(ctx, field, obj)
+		case "cadence":
+			out.Values[i] = ec._ActivityRecord_cadence(ctx, field, obj)
+		case "fractionalCadence":
+			out.Values[i] = ec._ActivityRecord_fractionalCadence(ctx, field, obj)
+		case "resistance":
+			out.Values[i] = ec._ActivityRecord_resistance(ctx, field, obj)
+		case "cycleLength":
+			out.Values[i] = ec._ActivityRecord_cycleLength(ctx, field, obj)
+		case "temperature":
+			out.Values[i] = ec._ActivityRecord_temperature(ctx, field, obj)
+		case "accumulatedPower":
+			out.Values[i] = ec._ActivityRecord_accumulatedPower(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3928,6 +4801,57 @@ func (ec *executionContext) marshalNActivity2ᚖgithubᚗcomᚋfusion44ᚋllᚑb
 	return ec._Activity(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNActivityRecord2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityRecord(ctx context.Context, sel ast.SelectionSet, v model.ActivityRecord) graphql.Marshaler {
+	return ec._ActivityRecord(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNActivityRecord2ᚕᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityRecordᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ActivityRecord) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNActivityRecord2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityRecord(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNActivityRecord2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityRecord(ctx context.Context, sel ast.SelectionSet, v *model.ActivityRecord) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._ActivityRecord(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalNAuthResponse2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐAuthResponse(ctx context.Context, sel ast.SelectionSet, v model.AuthResponse) graphql.Marshaler {
 	return ec._AuthResponse(ctx, sel, &v)
 }
@@ -4347,6 +5271,14 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	return ec.marshalOBoolean2bool(ctx, sel, *v)
+}
+
+func (ec *executionContext) unmarshalOFloat2float64(ctx context.Context, v interface{}) (float64, error) {
+	return graphql.UnmarshalFloat(v)
+}
+
+func (ec *executionContext) marshalOFloat2float64(ctx context.Context, sel ast.SelectionSet, v float64) graphql.Marshaler {
+	return graphql.MarshalFloat(v)
 }
 
 func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v interface{}) (int, error) {

@@ -112,7 +112,6 @@ func (d *Domain) ImportActivity(ctx context.Context, input model.ImportActivity)
 	}
 
 	// 5. Read the JSON file into an activity object
-	// TODO: import location data
 	importerService := service.NewImporterService(logger)
 	res, err := importerService.ImportFITJSON(jsonFilePath)
 	if err != nil {
@@ -120,6 +119,14 @@ func (d *Domain) ImportActivity(ctx context.Context, input model.ImportActivity)
 		logger.Errorf("Error: %s", err)
 		return nil, ErrInvalidInput
 	}
+
+	tx, err := d.ActivityRepo.DB.Begin()
+	if err != nil {
+		logger.Errorf("Error creating transaction for activity: %v", err)
+		return nil, ErrInternalServer
+	}
+
+	defer tx.Rollback()
 
 	// 6. Add custom information from user
 	activity := res.Activity
@@ -129,11 +136,24 @@ func (d *Domain) ImportActivity(ctx context.Context, input model.ImportActivity)
 	activity.InputType = model.Imported
 
 	// 7. Store the activity file to the DB
-	newActivity, err := d.ActivityRepo.AddActivity(&activity)
+	newActivity, err := d.ActivityRepo.AddActivity(activity)
 	if err != nil {
 		logger.Errorf("Unable to save activity to DB: ", err)
 		return nil, ErrUnableToProcess
 	}
+
+	// 8. Store the record data
+	for _, rec := range res.Records {
+		rec.ActivityID = newActivity.ID
+		rec.UserID = u.ID
+	}
+	_, err = d.ActivityRepo.AddActivityRecords(res.Records)
+	if err != nil {
+		logger.Errorf("Unable to insert records for activity: ", err)
+		return nil, ErrUnableToProcess
+	}
+
+	tx.Commit()
 
 	return newActivity, nil
 }
@@ -214,4 +234,23 @@ func (d *Domain) DeleteActivity(ctx context.Context, id string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+// GetActivityRecords returns all records for the specified activity
+func (d *Domain) GetActivityRecords(ctx context.Context, activity *model.Activity, preloads []string) ([]*model.ActivityRecord, error) {
+	u, err := middleware.GetCurrentUserFromContext(ctx)
+	if err != nil {
+		return nil, ErrUnauthenticated
+	}
+
+	if !activity.IsOwner(u) {
+		return nil, ErrUnauthorized
+	}
+
+	records, err := d.ActivityRepo.GetActivityRecords(activity.ID, preloads)
+	if err != nil {
+		return nil, fmt.Errorf("Error fetching activity records: %v", err)
+	}
+
+	return records, nil
 }

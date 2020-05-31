@@ -9,11 +9,11 @@ type PrettyFitFile struct {
 		Product      string `json:"product"`
 		Number       int    `json:"number"`
 		Type         string `json:"type"`
-	} `json:"fileId"`
+	} `json:"file_id"`
 	FileCreator struct {
 		SoftwareVersion string `json:"software_version"`
 		HardwareVersion string `json:"hardware_version"`
-	} `json:"fileCreator"`
+	} `json:"file_creator"`
 	Events []struct {
 		Timestamp    int    `json:"timestamp"`
 		TimerTrigger string `json:"timer_trigger"`
@@ -35,7 +35,7 @@ type PrettyFitFile struct {
 		BatteryStatus    int     `json:"battery_status"`
 		SourceType       string  `json:"source_type"`
 		AntNetwork       string  `json:"ant_network"`
-	} `json:"deviceInfos"`
+	} `json:"device_infos"`
 	DeviceSettings struct {
 		UtcOffset                         int    `json:"utc_offset"`
 		TimeOffset                        int    `json:"time_offset"`
@@ -50,7 +50,7 @@ type PrettyFitFile struct {
 		MountingSide                      int    `json:"mounting_side"`
 		LactateThresholdAutodetectEnabled bool   `json:"lactate_threshold_autodetect_enabled"`
 		NumberOfScreens                   int    `json:"number_of_screens"`
-	} `json:"deviceSettings"`
+	} `json:"device_settings"`
 	UserProfile struct {
 		LocaltimeIntoDay            float64 `json:"localtime_into_day"`
 		LocaltimeIntoDayOffset      float64 `json:"localtime_into_day_offset"`
@@ -91,7 +91,7 @@ type PrettyFitFile struct {
 		PositionSetting             string  `json:"position_setting"`
 		TemperatureSetting          string  `json:"temperature_setting"`
 		HeightSetting               string  `json:"height_setting"`
-	} `json:"userProfile"`
+	} `json:"user_profile"`
 	Sport struct {
 		Name     string `json:"name"`
 		Sport    string `json:"sport"`
@@ -112,7 +112,7 @@ type PrettyFitFile struct {
 		ThresholdHeartRateUnit         string  `json:"threshold_heart_rate_unit"`
 		HrCalcType                     string  `json:"hr_calc_type"`
 		PwrCalcType                    string  `json:"pwr_calc_type"`
-	} `json:"zonesTargets"`
+	} `json:"zones_targets"`
 	Records []struct {
 		Timestamp               int     `json:"timestamp"`
 		PositionLat             float64 `json:"position_lat"`

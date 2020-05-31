@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 // InputType describes the mode with which the activity was added
 type InputType string
