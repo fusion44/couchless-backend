@@ -33,19 +33,36 @@ func (d *Domain) HandleSingleFileUpload(ctx context.Context, file graphql.Upload
 	}
 
 	if strings.HasSuffix(file.Filename, ".FIT") {
-		// Store the file descriptor to the DB
-		fileDesc, err := d.FileRepository.AddFileDescriptor(&model.FileDescriptor{
+		fileService := service.NewFileService(cfg, l)
+		// Check if there is a file descriptor for this filename
+		descr, _ := d.FileRepository.GetFileDescriptorByFileName(file.Filename)
+		if descr != nil {
+			return descr, fmt.Errorf("File exists in database: %s", file.Filename)
+		}
+
+		descr = &model.FileDescriptor{
 			FileName:    file.Filename,
 			UserID:      u.ID,
 			ContentType: model.ContentTypeFIT,
-		})
+		}
+
+		res, err := fileService.FileExists(descr)
+		if err != nil {
+			log.Printf("Unable to probe file existence (%s): %v", file.Filename, err)
+			return descr, fmt.Errorf("Could not upload file: %s", file.Filename)
+		}
+		if res == true {
+			return descr, fmt.Errorf("File exists: %s", file.Filename)
+		}
+
+		// Store the file descriptor to the DB
+		fileDesc, err := d.FileRepository.AddFileDescriptor(descr)
 
 		if err != nil {
 			l.Errorf("Unable to store file descriptor for %s: %s", file.Filename, err)
 			return nil, fmt.Errorf("Could not upload file: %s", file.Filename)
 		}
 
-		fileService := service.NewFileService(cfg, l)
 		filePath, persistErr := fileService.PersistFile(fileDesc, file.File)
 		if persistErr != nil {
 			l.Errorf("Unable to store file: %s\nRemoving file descriptor", filePath)

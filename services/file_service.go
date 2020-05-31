@@ -44,3 +44,24 @@ func (fs *FileService) PersistFile(fileDesc *model.FileDescriptor, file io.Reade
 
 	return &filePath, nil
 }
+
+// FileExists checks whether the given file exists
+func (fs *FileService) FileExists(fileDesc *model.FileDescriptor) (bool, error) {
+	filePath, err := fileDesc.GetStoragePath(fs.storagePath)
+
+	if err != nil {
+		return false, err
+	}
+
+	filePath = filepath.Join(filePath, fileDesc.FileName)
+
+	if _, err := os.Stat(filePath); err == nil {
+		return true, nil
+	}
+
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+
+	return false, err
+}
