@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math"
 	"os"
 	"time"
 
@@ -24,6 +25,9 @@ type ImporterService struct {
 	log         *logging.Logger
 }
 
+// FitUTCTimestamp file timestamps start at 631065600 (UTC 00:00 Dec 31 1989)
+const FitUTCTimestamp = 631065600
+
 // NewImporterService imports data to the database
 func NewImporterService(log *logging.Logger) *ImporterService {
 	return &ImporterService{log: log}
@@ -41,14 +45,10 @@ func (cs *ImporterService) ImportFITJSON(jsonFilePath string) (*ImportResult, er
 	json.Unmarshal(js, &f)
 
 	if f.FileID.Type == "activity" {
-		startTime := time.Unix(int64(f.Session.StartTime), 0)
-		endTime := time.Unix(int64(f.Session.StartTime+f.Activity.TotalTimerTime), 0)
 
-		var a = &model.Activity{
-			SportType: f.Sport.Sport,
-			StartTime: startTime,
-			EndTime:   endTime,
-		}
+		startTime := time.Unix(int64(f.Session.StartTime+FitUTCTimestamp), 0)
+		endTime := time.Unix(int64(f.Session.StartTime+f.Activity.TotalTimerTime+FitUTCTimestamp), 0)
+
 		recs := make([]*model.ActivityRecord, len(f.Records))
 
 		// It can happen that PositionLat and PositionLong is 0
@@ -57,24 +57,53 @@ func (cs *ImporterService) ImportFITJSON(jsonFilePath string) (*ImportResult, er
 		// find the first non 0 values and use these as fallback
 		fallbackLat, fallbackLong := findFirstNonNilPos(&f)
 
+		var a = &model.Activity{
+			SportType:            f.Sport.Sport,
+			StartTime:            startTime,
+			EndTime:              endTime,
+			TimePaused:           0, // TODO: calculate
+			AvgPace:              0, // TODO: calculate
+			AvgSpeed:             f.Session.AvgSpeed,
+			AvgCadence:           f.Session.AvgCadence,
+			AvgFractionalCadence: f.Session.AvgFractionalCadence,
+			MaxCadence:           f.Session.MaxCadence,
+			MaxSpeed:             f.Session.MaxSpeed,
+			TotalDistance:        f.Session.TotalDistance,
+			TotalAscent:          f.Session.TotalAscent,
+			TotalDescent:         f.Session.TotalDescent,
+			MaxAltitude:          f.Session.MaxAltitude,
+			AvgHeartRate:         f.Session.AvgHeartRate,
+			MaxHeartRate:         f.Session.MaxHeartRate,
+			TotalTrainingEffect:  f.Session.TotalTrainingEffect,
+		}
+
+		scale := 180.0 / math.Pow(2, 31)
+
+		if len(f.Records) > 0 {
+			a.BoundaryNorth = fallbackLat * scale
+			a.BoundarySouth = fallbackLat * scale
+			a.BoundaryEast = fallbackLong * scale
+			a.BoundaryWest = fallbackLong * scale
+		}
+
 		for i, rec := range f.Records {
-			ts := time.Unix(int64(rec.Timestamp), 0)
+			ts := time.Unix(int64(rec.Timestamp+FitUTCTimestamp), 0)
 
 			// Fill nil position values with the first lat and long pos
-			latVal := int32(rec.PositionLat)
+			latVal := rec.PositionLat
 			if rec.PositionLat == 0 {
 				latVal = fallbackLat
 			}
 
-			longVal := int32(rec.PositionLong)
+			longVal := rec.PositionLong
 			if rec.PositionLong == 0 {
 				longVal = fallbackLong
 			}
 
 			ar := &model.ActivityRecord{
 				Timestamp:               ts,
-				PositionLat:             int(latVal),
-				PositionLong:            int(longVal),
+				PositionLat:             latVal * scale,
+				PositionLong:            longVal * scale,
 				Distance:                rec.Distance,
 				TimeFromCourse:          int(rec.TimeFromCourse),
 				CompressedSpeedDistance: rec.CompressedSpeedDistance,
@@ -90,6 +119,25 @@ func (cs *ImporterService) ImportFITJSON(jsonFilePath string) (*ImportResult, er
 				Temperature:             int(rec.Temperature),
 				AccumulatedPower:        int(rec.AccumulatedPower),
 			}
+
+			if ar.Altitude > a.MaxAltitude {
+				a.MaxAltitude = ar.Altitude
+			}
+
+			// Find latitude boundaries
+			if ar.PositionLat > a.BoundaryNorth {
+				a.BoundaryNorth = ar.PositionLat
+			} else if ar.PositionLat < a.BoundarySouth {
+				a.BoundarySouth = ar.PositionLat
+			}
+
+			// Find longitude boundaries
+			if ar.PositionLong > a.BoundaryEast {
+				a.BoundaryEast = ar.PositionLong
+			} else if ar.PositionLong < a.BoundaryWest {
+				a.BoundaryWest = ar.PositionLong
+			}
+
 			recs[i] = ar
 		}
 
@@ -98,12 +146,12 @@ func (cs *ImporterService) ImportFITJSON(jsonFilePath string) (*ImportResult, er
 	return nil, fmt.Errorf("Unable to import file type: %s", f.FileID.Type)
 }
 
-func findFirstNonNilPos(pff *model.PrettyFitFile) (int32, int32) {
-	var lat, long int32
+func findFirstNonNilPos(pff *model.PrettyFitFile) (float64, float64) {
+	var lat, long float64
 
 	for _, rec := range pff.Records {
 		if rec.PositionLat != 0 && rec.PositionLong != 0 {
-			return int32(rec.PositionLat), int32(rec.PositionLong)
+			return rec.PositionLat, rec.PositionLong
 		}
 	}
 

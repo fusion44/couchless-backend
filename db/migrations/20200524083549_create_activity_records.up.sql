@@ -2,8 +2,8 @@ CREATE TABLE activity_records
 (
   id BIGSERIAL PRIMARY KEY,
   "timestamp" TIMESTAMP NOT NULL,
-  position_lat INTEGER,
-  position_long INTEGER,
+  position_lat FLOAT,
+  position_long FLOAT,
   distance FLOAT,
   time_from_course INTEGER,
   compressed_speed_distance bytea,

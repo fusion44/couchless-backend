@@ -8,8 +8,8 @@ type ActivityRecord struct {
 	UserID                  string    `json:"user_id"`
 	ActivityID              string    `json:"activity_id"`
 	Timestamp               time.Time `json:"timestamp"`
-	PositionLat             int       `json:"position_lat"`
-	PositionLong            int       `json:"position_long"`
+	PositionLat             float64   `json:"position_lat"`
+	PositionLong            float64   `json:"position_long"`
 	Distance                float64   `json:"distance"`
 	TimeFromCourse          int       `json:"time_from_course"`
 	CompressedSpeedDistance float64   `json:"compressed_speed_distance"`

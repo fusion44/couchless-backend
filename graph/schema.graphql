@@ -35,12 +35,50 @@ input LoginInput {
 }
 
 type Activity {
+    "The `id` is the activity id in the database"
     id: ID!
     createdAt: Time!
     startTime: Time!
     endTime: Time!
     comment: String
     sportType: String!
+    "The nothernmost boundary latitude. Null if stationary"
+    boundaryNorth: Float
+    "The southernmost boundary latitude. Null if stationary"
+    boundarySouth: Float
+    "The easternmost boundary longitude. Null if stationary"
+    boundaryEast: Float
+    "The westernmost boundary longitude. Null if stationary"
+    boundaryWest: Float
+    "Pause time in seconds"
+    timePaused: Int
+    "The average pace"
+	avgPace: Float
+    "The average speed in m/s"
+	avgSpeed: Float
+    "The maximum speed in m/s"
+	maxSpeed: Float 
+    "The total distance covered in m"
+    totalDistance: Float
+    "The avarage cadence in rpm"
+	avgCadence: Int
+    "The average fractional cadence in rpm"
+	avgFractionalCadence: Int
+	"The maximum cadence in rpm"
+    maxCadence: Int
+    "The altitude change going up in m"
+	totalAscent: Int
+    "The altitude change going down in m"
+	totalDescent: Int
+    "The maximum altitude in m"
+    maxAltitude: Float
+	"The average heart rate in rpm"
+    avgHeartRate: Int
+	"The maximum heart rate in rpm"
+	maxHeartRate: Int
+    "The total training effect"
+	totalTrainingEffect: Int
+
     user: User!
     records: [ActivityRecord!]!
 }
@@ -54,9 +92,9 @@ type ActivityRecord {
     "The `timestamp` is the time when the entry was recorded"
 	timestamp: Time
     "The `positionLat` the latitude component of the coordinate"
-	positionLat: Int
+	positionLat: Float
     "The `positionLong` the longitude component of the coordinate"
-	positionLong: Int
+	positionLong: Float
     "The `distance` is the traveled distance since beginning of the activity"
 	distance: Float
     "The `timeFromCourse` is the time difference to the current course"
