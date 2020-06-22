@@ -23,7 +23,7 @@ CREATE TABLE activities
   max_altitude REAL,
   avg_heart_rate SMALLINT,
   max_heart_rate SMALLINT,
-  total_training_effect SMALLINT,
+  total_training_effect REAL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
   user_id BIGSERIAL REFERENCES users(id) ON DELETE CASCADE NOT NULL,

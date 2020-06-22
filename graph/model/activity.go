@@ -43,7 +43,7 @@ type Activity struct {
 	MaxAltitude          float64   `json:"maxAltitude"`
 	AvgHeartRate         int       `json:"avgHeartRate"`
 	MaxHeartRate         int       `json:"maxHeartRate"`
-	TotalTrainingEffect  int       `json:"totalTrainingEffect"`
+	TotalTrainingEffect  float64   `json:"totalTrainingEffect"`
 	CreatedAt            time.Time `json:"createdAt"`
 }
 

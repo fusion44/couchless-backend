@@ -47,7 +47,7 @@ func (cs *ImporterService) ImportFITJSON(jsonFilePath string) (*ImportResult, er
 	if f.FileID.Type == "activity" {
 
 		startTime := time.Unix(int64(f.Session.StartTime+FitUTCTimestamp), 0)
-		endTime := time.Unix(int64(f.Session.StartTime+f.Activity.TotalTimerTime+FitUTCTimestamp), 0)
+		endTime := time.Unix(int64(f.Session.StartTime+f.Session.TotalElapsedTime+FitUTCTimestamp), 0)
 
 		recs := make([]*model.ActivityRecord, len(f.Records))
 
@@ -55,7 +55,7 @@ func (cs *ImporterService) ImportFITJSON(jsonFilePath string) (*ImportResult, er
 		// I suspect that, when an activity is started on the watch
 		// and the GPS is not ready it will lead to these NOK values
 		// find the first non 0 values and use these as fallback
-		fallbackLat, fallbackLong := findFirstNonNilPos(&f)
+		fallbackLat, fallbackLong := findFirstNonNilPosLatLong(&f)
 
 		var a = &model.Activity{
 			SportType:            f.Sport.Sport,
@@ -74,7 +74,7 @@ func (cs *ImporterService) ImportFITJSON(jsonFilePath string) (*ImportResult, er
 			MaxAltitude:          f.Session.MaxAltitude,
 			AvgHeartRate:         f.Session.AvgHeartRate,
 			MaxHeartRate:         f.Session.MaxHeartRate,
-			TotalTrainingEffect:  f.Session.TotalTrainingEffect,
+			TotalTrainingEffect:  float64(f.Session.TotalTrainingEffect) / 10,
 		}
 
 		scale := 180.0 / math.Pow(2, 31)
@@ -100,6 +100,11 @@ func (cs *ImporterService) ImportFITJSON(jsonFilePath string) (*ImportResult, er
 				longVal = fallbackLong
 			}
 
+			altitude := rec.Altitude
+			if rec.Altitude == 0 {
+				altitude = findFirstNonNilAltitude(&f)
+			}
+
 			ar := &model.ActivityRecord{
 				Timestamp:               ts,
 				PositionLat:             latVal * scale,
@@ -108,7 +113,7 @@ func (cs *ImporterService) ImportFITJSON(jsonFilePath string) (*ImportResult, er
 				TimeFromCourse:          int(rec.TimeFromCourse),
 				CompressedSpeedDistance: rec.CompressedSpeedDistance,
 				HeartRate:               int(rec.HeartRate),
-				Altitude:                rec.Altitude,
+				Altitude:                altitude,
 				Speed:                   rec.Speed,
 				Power:                   int(rec.Power),
 				Grade:                   int(rec.Grade),
@@ -146,7 +151,7 @@ func (cs *ImporterService) ImportFITJSON(jsonFilePath string) (*ImportResult, er
 	return nil, fmt.Errorf("Unable to import file type: %s", f.FileID.Type)
 }
 
-func findFirstNonNilPos(pff *model.PrettyFitFile) (float64, float64) {
+func findFirstNonNilPosLatLong(pff *model.PrettyFitFile) (float64, float64) {
 	var lat, long float64
 
 	for _, rec := range pff.Records {
@@ -157,4 +162,13 @@ func findFirstNonNilPos(pff *model.PrettyFitFile) (float64, float64) {
 
 	// nothing found. Return nil
 	return lat, long
+}
+
+func findFirstNonNilAltitude(pff *model.PrettyFitFile) float64 {
+	for _, rec := range pff.Records {
+		if rec.Altitude != 0 {
+			return rec.Altitude
+		}
+	}
+	return 0
 }

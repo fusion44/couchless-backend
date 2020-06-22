@@ -77,7 +77,7 @@ type Activity {
 	"The maximum heart rate in rpm"
 	maxHeartRate: Int
     "The total training effect"
-	totalTrainingEffect: Int
+	totalTrainingEffect: Float
 
     user: User!
     records: [ActivityRecord!]!

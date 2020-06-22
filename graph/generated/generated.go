@@ -810,16 +810,16 @@ type Activity {
     endTime: Time!
     comment: String
     sportType: String!
-    "The nothernmost boudary latitude. Null if stationary"
+    "The nothernmost boundary latitude. Null if stationary"
     boundaryNorth: Float
-    "The southernmost boudary latitude. Null if stationary"
+    "The southernmost boundary latitude. Null if stationary"
     boundarySouth: Float
     "The easternmost boundary longitude. Null if stationary"
     boundaryEast: Float
     "The westernmost boundary longitude. Null if stationary"
     boundaryWest: Float
     "Pause time in seconds"
-    timePaused: Int  
+    timePaused: Int
     "The average pace"
 	avgPace: Float
     "The average speed in m/s"
@@ -845,7 +845,7 @@ type Activity {
 	"The maximum heart rate in rpm"
 	maxHeartRate: Int
     "The total training effect"
-	totalTrainingEffect: Int
+	totalTrainingEffect: Float
 
     user: User!
     records: [ActivityRecord!]!
@@ -1927,9 +1927,9 @@ func (ec *executionContext) _Activity_totalTrainingEffect(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(float64)
 	fc.Result = res
-	return ec.marshalOInt2int(ctx, field.Selections, res)
+	return ec.marshalOFloat2float64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Activity_user(ctx context.Context, field graphql.CollectedField, obj *model.Activity) (ret graphql.Marshaler) {

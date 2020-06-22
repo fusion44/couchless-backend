@@ -389,13 +389,13 @@ type PrettyFitFile struct {
 		AvgCadencePositionUnit            string    `json:"avg_cadence_position_unit"`
 	} `json:"laps"`
 	Session struct {
-		Timestamp                         int32   `json:"timestamp"`
-		TimestampOffset                   int32   `json:"timestamp_offset"`
-		TimestampScale                    int32   `json:"timestamp_scale"`
+		Timestamp                         uint32  `json:"timestamp"`
+		TimestampOffset                   uint32  `json:"timestamp_offset"`
+		TimestampScale                    uint32  `json:"timestamp_scale"`
 		TimestampUnit                     string  `json:"timestamp_unit"`
-		StartTime                         int32   `json:"start_time"`
-		StartTimeOffset                   int32   `json:"start_time_offset"`
-		StartTimeScale                    int32   `json:"start_time_scale"`
+		StartTime                         uint32  `json:"start_time"`
+		StartTimeOffset                   uint32  `json:"start_time_offset"`
+		StartTimeScale                    uint32  `json:"start_time_scale"`
 		StartTimeUnit                     string  `json:"start_time_unit"`
 		StartPositionLat                  int32   `json:"start_position_lat"`
 		StartPositionLatOffset            int32   `json:"start_position_lat_offset"`
