@@ -45,9 +45,40 @@ func (cs *ImporterService) ImportFITJSON(jsonFilePath string) (*ImportResult, er
 	json.Unmarshal(js, &f)
 
 	if f.FileID.Type == "activity" {
+		var startTime, endTime time.Time
+		var finalStopEvent, numPauses int
+		numEvent := len(f.Events)
 
-		startTime := time.Unix(int64(f.Session.StartTime+FitUTCTimestamp), 0)
-		endTime := time.Unix(int64(f.Session.StartTime+f.Session.TotalElapsedTime+FitUTCTimestamp), 0)
+		// The last stop event is not necessarily the very last event => search for it
+		// We need for the pause time calculations below
+		for i := numEvent - 1; i >= 0; i-- {
+			if f.Events[i].Event == "timer" && f.Events[i].EventType == "stop_all" {
+				finalStopEvent = i
+				break
+			}
+		}
+
+		firstStartFound := false
+		totalPauseTime := 0
+		lastStopTime := 0
+		for i, e := range f.Events {
+			if e.Event == "timer" && e.EventType == "start" && !firstStartFound {
+				// first start
+				firstStartFound = true
+				startTime = time.Unix(int64(e.Timestamp+FitUTCTimestamp), 0)
+			} else if e.Event == "timer" && e.EventType == "start" && firstStartFound {
+				// subsequent start, we continue the activity here
+				totalPauseTime += e.Timestamp - lastStopTime
+				lastStopTime = 0
+				numPauses++
+			} else if e.Event == "timer" && e.EventType == "stop_all" && i != finalStopEvent {
+				lastStopTime = e.Timestamp
+			} else if i == finalStopEvent {
+				endTime = time.Unix(int64(e.Timestamp+FitUTCTimestamp), 0)
+			} else {
+				// ignore
+			}
+		}
 
 		recs := make([]*model.ActivityRecord, len(f.Records))
 
@@ -57,11 +88,14 @@ func (cs *ImporterService) ImportFITJSON(jsonFilePath string) (*ImportResult, er
 		// find the first non 0 values and use these as fallback
 		fallbackLat, fallbackLong := findFirstNonNilPosLatLong(&f)
 
+		duration := int(endTime.Sub(startTime).Seconds())
+
 		var a = &model.Activity{
 			SportType:            f.Sport.Sport,
 			StartTime:            startTime,
 			EndTime:              endTime,
-			TimePaused:           0, // TODO: calculate
+			Duration:             duration,
+			TimePaused:           totalPauseTime,
 			AvgPace:              0, // TODO: calculate
 			AvgSpeed:             f.Session.AvgSpeed,
 			AvgCadence:           f.Session.AvgCadence,

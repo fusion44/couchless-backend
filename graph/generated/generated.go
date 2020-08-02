@@ -58,6 +58,7 @@ type ComplexityRoot struct {
 		BoundaryWest         func(childComplexity int) int
 		Comment              func(childComplexity int) int
 		CreatedAt            func(childComplexity int) int
+		Duration             func(childComplexity int) int
 		EndTime              func(childComplexity int) int
 		ID                   func(childComplexity int) int
 		MaxAltitude          func(childComplexity int) int
@@ -252,6 +253,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Activity.CreatedAt(childComplexity), true
+
+	case "Activity.duration":
+		if e.complexity.Activity.Duration == nil {
+			break
+		}
+
+		return e.complexity.Activity.Duration(childComplexity), true
 
 	case "Activity.endTime":
 		if e.complexity.Activity.EndTime == nil {
@@ -770,196 +778,203 @@ var sources = []*ast.Source{
 scalar Upload
 
 type AuthToken {
-    accessToken: String!
-    expiredAt: Time!
+  accessToken: String!
+  expiredAt: Time!
 }
 
 type AuthResponse {
-    authToken: AuthToken!
-    user: User!
+  authToken: AuthToken!
+  user: User!
 }
 
 type User {
-    id: ID!
-    username: String!
-    email: String!
-    createdAt: Time!
-    updatedAt: Time!
+  id: ID!
+  username: String!
+  email: String!
+  createdAt: Time!
+  updatedAt: Time!
 }
 
 input RegisterInput {
-    username: String!
-    email: String!
-    password: String!
-    confirmPassword: String!
+  username: String!
+  email: String!
+  password: String!
+  confirmPassword: String!
 }
 
 "The ` + "`" + `LoginInput` + "`" + ` type represents the required login input"
 input LoginInput {
-    "The ` + "`" + `username` + "`" + ` can either be an email or the actual username"
-    username: String!
-    "The ` + "`" + `password` + "`" + ` length must be 8 characters minimum"
-    password: String!
+  "The ` + "`" + `username` + "`" + ` can either be an email or the actual username"
+  username: String!
+  "The ` + "`" + `password` + "`" + ` length must be 8 characters minimum"
+  password: String!
 }
 
 type Activity {
-    "The ` + "`" + `id` + "`" + ` is the activity id in the database"
-    id: ID!
-    createdAt: Time!
-    startTime: Time!
-    endTime: Time!
-    comment: String
-    sportType: String!
-    "The nothernmost boundary latitude. Null if stationary"
-    boundaryNorth: Float
-    "The southernmost boundary latitude. Null if stationary"
-    boundarySouth: Float
-    "The easternmost boundary longitude. Null if stationary"
-    boundaryEast: Float
-    "The westernmost boundary longitude. Null if stationary"
-    boundaryWest: Float
-    "Pause time in seconds"
-    timePaused: Int
-    "The average pace"
-	avgPace: Float
-    "The average speed in m/s"
-	avgSpeed: Float
-    "The maximum speed in m/s"
-	maxSpeed: Float 
-    "The total distance covered in m"
-    totalDistance: Float
-    "The avarage cadence in rpm"
-	avgCadence: Int
-    "The average fractional cadence in rpm"
-	avgFractionalCadence: Int
-	"The maximum cadence in rpm"
-    maxCadence: Int
-    "The altitude change going up in m"
-	totalAscent: Int
-    "The altitude change going down in m"
-	totalDescent: Int
-    "The maximum altitude in m"
-    maxAltitude: Float
-	"The average heart rate in rpm"
-    avgHeartRate: Int
-	"The maximum heart rate in rpm"
-	maxHeartRate: Int
-    "The total training effect"
-	totalTrainingEffect: Float
+  "The ` + "`" + `id` + "`" + ` is the activity id in the database"
+  id: ID!
+  createdAt: Time!
+  startTime: Time!
+  "The total activity duration in seconds (excluding pauses)"
+  duration: Int
+  endTime: Time!
+  comment: String
+  sportType: String!
+  "The nothernmost boundary latitude. Null if stationary"
+  boundaryNorth: Float
+  "The southernmost boundary latitude. Null if stationary"
+  boundarySouth: Float
+  "The easternmost boundary longitude. Null if stationary"
+  boundaryEast: Float
+  "The westernmost boundary longitude. Null if stationary"
+  boundaryWest: Float
+  "Pause time in seconds"
+  timePaused: Int
+  "The average pace"
+  avgPace: Float
+  "The average speed in m/s"
+  avgSpeed: Float
+  "The maximum speed in m/s"
+  maxSpeed: Float
+  "The total distance covered in m"
+  totalDistance: Float
+  "The avarage cadence in rpm"
+  avgCadence: Int
+  "The average fractional cadence in rpm"
+  avgFractionalCadence: Int
+  "The maximum cadence in rpm"
+  maxCadence: Int
+  "The altitude change going up in m"
+  totalAscent: Int
+  "The altitude change going down in m"
+  totalDescent: Int
+  "The maximum altitude in m"
+  maxAltitude: Float
+  "The average heart rate in rpm"
+  avgHeartRate: Int
+  "The maximum heart rate in rpm"
+  maxHeartRate: Int
+  "The total training effect"
+  totalTrainingEffect: Float
 
-    user: User!
-    records: [ActivityRecord!]!
+  user: User!
+  records: [ActivityRecord!]!
 }
 
 "The ` + "`" + `ActivityRecord` + "`" + ` type is a  timestamped and geo located data record for an activity"
 type ActivityRecord {
-    "The ` + "`" + `id` + "`" + ` is the file id in the database"
-    id: ID!
-    "The ` + "`" + `activityId` + "`" + ` is the activity id in the database"
-	activityId: ID!
-    "The ` + "`" + `timestamp` + "`" + ` is the time when the entry was recorded"
-	timestamp: Time
-    "The ` + "`" + `positionLat` + "`" + ` the latitude component of the coordinate"
-	positionLat: Float
-    "The ` + "`" + `positionLong` + "`" + ` the longitude component of the coordinate"
-	positionLong: Float
-    "The ` + "`" + `distance` + "`" + ` is the traveled distance since beginning of the activity"
-	distance: Float
-    "The ` + "`" + `timeFromCourse` + "`" + ` is the time difference to the current course"
-	timeFromCourse: Int
-    "The ` + "`" + `heartRate` + "`" + ` is heart rate at the time of recording"
-	heartRate: Int
-    "The ` + "`" + `altitude` + "`" + ` is altitude at the time of recording"
-	altitude: Float
-    "The ` + "`" + `speed` + "`" + ` is speed at the time of recording"
-	speed: Float
-    "The ` + "`" + `power` + "`" + ` is power at the time of recording"
-	power: Int
-    "The ` + "`" + `grade` + "`" + ` is grade at the time of recording"
-	grade: Int
-    "The ` + "`" + `cadence` + "`" + ` is cadence at the time of recording"
-	cadence: Int
-    "The ` + "`" + `fractionalCadence` + "`" + ` is fractionalCadence at the time of recording"
-	fractionalCadence: Int
-    "The ` + "`" + `resistance` + "`" + ` is resistance at the time of recording"
-	resistance: Int
-    "The ` + "`" + `cycleLength` + "`" + ` is cycleLength at the time of recording"
-	cycleLength: Int
-    "The ` + "`" + `temperature` + "`" + ` is temperature at the time of recording"
-	temperature: Int
-    "The ` + "`" + `accumulatedPower` + "`" + ` is accumulatedPower at the time of recording"
-	accumulatedPower: Int
+  "The ` + "`" + `id` + "`" + ` is the file id in the database"
+  id: ID!
+  "The ` + "`" + `activityId` + "`" + ` is the activity id in the database"
+  activityId: ID!
+  "The ` + "`" + `timestamp` + "`" + ` is the time when the entry was recorded"
+  timestamp: Time
+  "The ` + "`" + `positionLat` + "`" + ` the latitude component of the coordinate"
+  positionLat: Float
+  "The ` + "`" + `positionLong` + "`" + ` the longitude component of the coordinate"
+  positionLong: Float
+  "The ` + "`" + `distance` + "`" + ` is the traveled distance since beginning of the activity"
+  distance: Float
+  "The ` + "`" + `timeFromCourse` + "`" + ` is the time difference to the current course"
+  timeFromCourse: Int
+  "The ` + "`" + `heartRate` + "`" + ` is heart rate at the time of recording"
+  heartRate: Int
+  "The ` + "`" + `altitude` + "`" + ` is altitude at the time of recording"
+  altitude: Float
+  "The ` + "`" + `speed` + "`" + ` is speed at the time of recording"
+  speed: Float
+  "The ` + "`" + `power` + "`" + ` is power at the time of recording"
+  power: Int
+  "The ` + "`" + `grade` + "`" + ` is grade at the time of recording"
+  grade: Int
+  "The ` + "`" + `cadence` + "`" + ` is cadence at the time of recording"
+  cadence: Int
+  "The ` + "`" + `fractionalCadence` + "`" + ` is fractionalCadence at the time of recording"
+  fractionalCadence: Int
+  "The ` + "`" + `resistance` + "`" + ` is resistance at the time of recording"
+  resistance: Int
+  "The ` + "`" + `cycleLength` + "`" + ` is cycleLength at the time of recording"
+  cycleLength: Int
+  "The ` + "`" + `temperature` + "`" + ` is temperature at the time of recording"
+  temperature: Int
+  "The ` + "`" + `accumulatedPower` + "`" + ` is accumulatedPower at the time of recording"
+  accumulatedPower: Int
 }
 
 input ActivityFilter {
-    startTime: Time
-    endTime: Time
-    comment: String
-    sportType: String
+  startTime: Time
+  endTime: Time
+  comment: String
+  sportType: String
 }
 
 type Query {
-    activity(id: ID!): Activity!
-    activities(filter: ActivityFilter, limit: Int = 10, offset: Int = 0): [Activity!]!
-    user(id: ID!): User!
+  activity(id: ID!): Activity!
+  activities(
+    filter: ActivityFilter
+    limit: Int = 10
+    offset: Int = 0
+  ): [Activity!]!
+  user(id: ID!): User!
 }
 
 input NewActivity {
-    startTime: Time!
-    endTime: Time!
-    comment: String
-    sportType: String!
+  startTime: Time!
+  endTime: Time!
+  comment: String
+  sportType: String!
 }
 
 input UpdateActivity {
-    id: ID!
-    startTime: Time
-    endTime:Time
-    comment: String
-    sportType: String
+  id: ID!
+  startTime: Time
+  endTime: Time
+  comment: String
+  sportType: String
 }
 
 "The ` + "`" + `ImportActivity` + "`" + ` input represents a to imported activity"
 input ImportActivity {
-    "The ` + "`" + `fileID` + "`" + ` is the ID of a ` + "`" + `FileDescriptor` + "`" + `"
-    fileID: ID!
-    "The ` + "`" + `comment` + "`" + ` is an optional comment to be added to the activity"
-    comment: String
+  "The ` + "`" + `fileID` + "`" + ` is the ID of a ` + "`" + `FileDescriptor` + "`" + `"
+  fileID: ID!
+  "The ` + "`" + `comment` + "`" + ` is an optional comment to be added to the activity"
+  comment: String
 }
 
 input UploadFile {
-    id: Int!
-    file: Upload!
+  id: Int!
+  file: Upload!
 }
 
 "The ` + "`" + `FileDescriptor` + "`" + ` type represents a file in the system"
 type FileDescriptor {
-    "The ` + "`" + `id` + "`" + ` is the file id in the database"
-    id: String!
-    "The ` + "`" + `fileName` + "`" + ` is the original name of the file"
-    fileName: String!
-    "The ` + "`" + `user` + "`" + ` is the owner of the file"
-    user: User!
-    "` + "`" + `createdAt` + "`" + ` is the time when the file was uploaded"
-    createdAt: Time!
-    """
-    ` + "`" + `contentType` + "`" + ` is the file type of content this file contains.
-    Supported options: image, fit
-    """
-    contentType: String!
+  "The ` + "`" + `id` + "`" + ` is the file id in the database"
+  id: String!
+  "The ` + "`" + `fileName` + "`" + ` is the original name of the file"
+  fileName: String!
+  "The ` + "`" + `user` + "`" + ` is the owner of the file"
+  user: User!
+  "` + "`" + `createdAt` + "`" + ` is the time when the file was uploaded"
+  createdAt: Time!
+  """
+  ` + "`" + `contentType` + "`" + ` is the file type of content this file contains.
+  Supported options: image, fit
+  """
+  contentType: String!
 }
 
 type Mutation {
-    register(input: RegisterInput!): AuthResponse!
-    login(input: LoginInput!): AuthResponse!
+  register(input: RegisterInput!): AuthResponse!
+  login(input: LoginInput!): AuthResponse!
 
-    addActivity(input: NewActivity!): Activity!
-    importActivity(input: ImportActivity!): Activity!
-    updateActivity(input: UpdateActivity!): Activity!
-    deleteActivity(id: ID!): Boolean!
+  addActivity(input: NewActivity!): Activity!
+  importActivity(input: ImportActivity!): Activity!
+  updateActivity(input: UpdateActivity!): Activity!
+  deleteActivity(id: ID!): Boolean!
 
-    singleUpload(file: Upload!): FileDescriptor!
-}`, BuiltIn: false},
+  singleUpload(file: Upload!): FileDescriptor!
+}
+`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
@@ -1275,6 +1290,37 @@ func (ec *executionContext) _Activity_startTime(ctx context.Context, field graph
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Activity_duration(ctx context.Context, field graphql.CollectedField, obj *model.Activity) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Activity",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Duration, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalOInt2int(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Activity_endTime(ctx context.Context, field graphql.CollectedField, obj *model.Activity) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -1524,9 +1570,9 @@ func (ec *executionContext) _Activity_timePaused(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(int64)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalOInt2int64(ctx, field.Selections, res)
+	return ec.marshalOInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Activity_avgPace(ctx context.Context, field graphql.CollectedField, obj *model.Activity) (ret graphql.Marshaler) {
@@ -4830,6 +4876,8 @@ func (ec *executionContext) _Activity(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
+		case "duration":
+			out.Values[i] = ec._Activity_duration(ctx, field, obj)
 		case "endTime":
 			out.Values[i] = ec._Activity_endTime(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -6063,14 +6111,6 @@ func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v interface{}
 
 func (ec *executionContext) marshalOInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
 	return graphql.MarshalInt(v)
-}
-
-func (ec *executionContext) unmarshalOInt2int64(ctx context.Context, v interface{}) (int64, error) {
-	return graphql.UnmarshalInt64(v)
-}
-
-func (ec *executionContext) marshalOInt2int64(ctx context.Context, sel ast.SelectionSet, v int64) graphql.Marshaler {
-	return graphql.MarshalInt64(v)
 }
 
 func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {

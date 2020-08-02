@@ -39,6 +39,8 @@ type Activity {
   id: ID!
   createdAt: Time!
   startTime: Time!
+  "The total activity duration in seconds (excluding pauses)"
+  duration: Int
   endTime: Time!
   comment: String
   sportType: String!

@@ -23,6 +23,7 @@ type Activity struct {
 	InputType            InputType `json:"inputType"`
 	StartTime            time.Time `json:"startTime"`
 	EndTime              time.Time `json:"endTime"`
+	Duration             int       `json:"duration"`
 	Comment              string    `json:"comment"`
 	SportType            string    `json:"sport"`
 	UserID               string    `json:"userId"`
@@ -30,7 +31,7 @@ type Activity struct {
 	BoundarySouth        float64   `json:"boundarySouth"`
 	BoundaryEast         float64   `json:"boundaryEast"`
 	BoundaryWest         float64   `json:"boundaryWest"`
-	TimePaused           int64     `json:"timePaused"`
+	TimePaused           int       `json:"timePaused"`
 	AvgPace              float64   `json:"avgPace"`
 	AvgSpeed             float64   `json:"avgSpeed"`
 	AvgCadence           int       `json:"avgCadence"`
