@@ -129,6 +129,7 @@ type ComplexityRoot struct {
 		Activities func(childComplexity int, filter *model.ActivityFilter, limit *int, offset *int) int
 		Activity   func(childComplexity int, id string) int
 		User       func(childComplexity int, id string) int
+		UserStats  func(childComplexity int) int
 	}
 
 	User struct {
@@ -137,6 +138,12 @@ type ComplexityRoot struct {
 		ID        func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 		Username  func(childComplexity int) int
+	}
+
+	UserStatMonth struct {
+		Period    func(childComplexity int) int
+		SportType func(childComplexity int) int
+		Total     func(childComplexity int) int
 	}
 }
 
@@ -160,6 +167,7 @@ type QueryResolver interface {
 	Activity(ctx context.Context, id string) (*model.Activity, error)
 	Activities(ctx context.Context, filter *model.ActivityFilter, limit *int, offset *int) ([]*model.Activity, error)
 	User(ctx context.Context, id string) (*model.User, error)
+	UserStats(ctx context.Context) ([]*model.UserStatMonth, error)
 }
 
 type executableSchema struct {
@@ -675,6 +683,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.User(childComplexity, args["id"].(string)), true
 
+	case "Query.userStats":
+		if e.complexity.Query.UserStats == nil {
+			break
+		}
+
+		return e.complexity.Query.UserStats(childComplexity), true
+
 	case "User.createdAt":
 		if e.complexity.User.CreatedAt == nil {
 			break
@@ -709,6 +724,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.Username(childComplexity), true
+
+	case "UserStatMonth.period":
+		if e.complexity.UserStatMonth.Period == nil {
+			break
+		}
+
+		return e.complexity.UserStatMonth.Period(childComplexity), true
+
+	case "UserStatMonth.sportType":
+		if e.complexity.UserStatMonth.SportType == nil {
+			break
+		}
+
+		return e.complexity.UserStatMonth.SportType(childComplexity), true
+
+	case "UserStatMonth.total":
+		if e.complexity.UserStatMonth.Total == nil {
+			break
+		}
+
+		return e.complexity.UserStatMonth.Total(childComplexity), true
 
 	}
 	return 0, false
@@ -793,6 +829,16 @@ type User {
   email: String!
   createdAt: Time!
   updatedAt: Time!
+}
+
+"Accumulated monthly statistics for activities by sport type"
+type UserStatMonth {
+  "First day of the month of this stat"
+  period: Time!
+  "Total time spent with this sport in seconds"
+  total: Int!
+  "The sport type"
+  sportType: String!
 }
 
 input RegisterInput {
@@ -916,6 +962,7 @@ type Query {
     offset: Int = 0
   ): [Activity!]!
   user(id: ID!): User!
+  userStats: [UserStatMonth]!
 }
 
 input NewActivity {
@@ -3326,6 +3373,40 @@ func (ec *executionContext) _Query_user(ctx context.Context, field graphql.Colle
 	return ec.marshalNUser2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Query_userStats(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().UserStats(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.UserStatMonth)
+	fc.Result = res
+	return ec.marshalNUserStatMonth2ᚕᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUserStatMonth(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -3563,6 +3644,108 @@ func (ec *executionContext) _User_updatedAt(ctx context.Context, field graphql.C
 	res := resTmp.(time.Time)
 	fc.Result = res
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _UserStatMonth_period(ctx context.Context, field graphql.CollectedField, obj *model.UserStatMonth) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "UserStatMonth",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Period, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _UserStatMonth_total(ctx context.Context, field graphql.CollectedField, obj *model.UserStatMonth) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "UserStatMonth",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Total, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _UserStatMonth_sportType(ctx context.Context, field graphql.CollectedField, obj *model.UserStatMonth) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "UserStatMonth",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SportType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -5267,6 +5450,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				}
 				return res
 			})
+		case "userStats":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_userStats(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "__type":
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
@@ -5315,6 +5512,43 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			}
 		case "updatedAt":
 			out.Values[i] = ec._User_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var userStatMonthImplementors = []string{"UserStatMonth"}
+
+func (ec *executionContext) _UserStatMonth(ctx context.Context, sel ast.SelectionSet, obj *model.UserStatMonth) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, userStatMonthImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("UserStatMonth")
+		case "period":
+			out.Values[i] = ec._UserStatMonth_period(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "total":
+			out.Values[i] = ec._UserStatMonth_total(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "sportType":
+			out.Values[i] = ec._UserStatMonth_sportType(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -5836,6 +6070,43 @@ func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋfusion44ᚋllᚑbacke
 	return ec._User(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNUserStatMonth2ᚕᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUserStatMonth(ctx context.Context, sel ast.SelectionSet, v []*model.UserStatMonth) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOUserStatMonth2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUserStatMonth(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
 	return ec.___Directive(ctx, sel, &v)
 }
@@ -6172,6 +6443,17 @@ func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel
 		return graphql.Null
 	}
 	return ec.marshalOTime2timeᚐTime(ctx, sel, *v)
+}
+
+func (ec *executionContext) marshalOUserStatMonth2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUserStatMonth(ctx context.Context, sel ast.SelectionSet, v model.UserStatMonth) graphql.Marshaler {
+	return ec._UserStatMonth(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOUserStatMonth2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUserStatMonth(ctx context.Context, sel ast.SelectionSet, v *model.UserStatMonth) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._UserStatMonth(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

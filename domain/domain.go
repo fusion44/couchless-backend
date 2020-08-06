@@ -23,17 +23,20 @@ type Domain struct {
 	UsersRepo      repositories.UsersRepository
 	ActivityRepo   repositories.ActivitiesRepository
 	FileRepository repositories.FileDescRepository
+	StatsRepo      repositories.StatsRepository
 }
 
 // NewDomain creates a new Domain instance
 func NewDomain(
 	usersRepo repositories.UsersRepository,
 	activityRepo repositories.ActivitiesRepository,
-	fileRepo repositories.FileDescRepository) *Domain {
+	fileRepo repositories.FileDescRepository,
+	statsRepo repositories.StatsRepository) *Domain {
 	return &Domain{
 		UsersRepo:      usersRepo,
 		ActivityRepo:   activityRepo,
-		FileRepository: fileRepo}
+		FileRepository: fileRepo,
+		StatsRepo:      statsRepo}
 }
 
 // Ownable makes an object ownable by an user

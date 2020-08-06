@@ -78,6 +78,10 @@ func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error
 	return r.Domain.GetUserByID(ctx, id)
 }
 
+func (r *queryResolver) UserStats(ctx context.Context) ([]*model.UserStatMonth, error) {
+	return r.Domain.GetStatsForCurrentUser(ctx)
+}
+
 // Activity returns generated.ActivityResolver implementation.
 func (r *Resolver) Activity() generated.ActivityResolver { return &activityResolver{r} }
 

@@ -53,6 +53,7 @@ func (d *Domain) GetActivityByID(ctx context.Context, id string) (*model.Activit
 
 // AddActivity adds a new Activity to the database for current user
 func (d *Domain) AddActivity(ctx context.Context, input model.NewActivity) (*model.Activity, error) {
+	logger, _ := middleware.GetLoggerFromContext(ctx)
 	u, err := middleware.GetCurrentUserFromContext(ctx)
 	if err != nil {
 		return nil, ErrUnauthenticated
@@ -74,6 +75,9 @@ func (d *Domain) AddActivity(ctx context.Context, input model.NewActivity) (*mod
 		logger.Error(err)
 		return nil, err
 	}
+
+	d.UpdateStatsForCurrentUser(ctx)
+
 	return res, err
 }
 
@@ -163,6 +167,8 @@ func (d *Domain) ImportActivity(ctx context.Context, input model.ImportActivity)
 
 	tx.Commit()
 
+	d.UpdateStatsForCurrentUser(ctx)
+
 	return newActivity, nil
 }
 
@@ -210,7 +216,10 @@ func (d *Domain) UpdateActivity(ctx context.Context, input model.UpdateActivity)
 		return nil, errors.New("Nothing to update")
 	}
 
+	activity.Duration = int(activity.EndTime.Sub(activity.StartTime).Seconds())
 	activity, err = d.ActivityRepo.UpdateActivity(activity)
+
+	d.UpdateStatsForCurrentUser(ctx)
 
 	if err != nil {
 		return nil, fmt.Errorf("Error while updating activity: %v", err)

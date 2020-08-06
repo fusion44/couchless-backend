@@ -19,6 +19,16 @@ type User {
   updatedAt: Time!
 }
 
+"Accumulated monthly statistics for activities by sport type"
+type UserStatMonth {
+  "First day of the month of this stat"
+  period: Time!
+  "Total time spent with this sport in seconds"
+  total: Int!
+  "The sport type"
+  sportType: String!
+}
+
 input RegisterInput {
   username: String!
   email: String!
@@ -140,6 +150,7 @@ type Query {
     offset: Int = 0
   ): [Activity!]!
   user(id: ID!): User!
+  userStats: [UserStatMonth]!
 }
 
 input NewActivity {
