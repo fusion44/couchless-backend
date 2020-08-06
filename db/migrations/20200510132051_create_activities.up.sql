@@ -6,7 +6,7 @@ CREATE TABLE activities
   comment TEXT,
   start_time TIMESTAMP NOT NULL,
   end_time TIMESTAMP NOT NULL,
-  duration int,
+  duration int NOT NULL,
 	boundary_north FLOAT,
 	boundary_south FLOAT,
 	boundary_east FLOAT,

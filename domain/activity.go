@@ -63,10 +63,18 @@ func (d *Domain) AddActivity(ctx context.Context, input model.NewActivity) (*mod
 		Comment:   *input.Comment,
 		StartTime: input.StartTime,
 		EndTime:   input.EndTime,
+		Duration:  int(input.EndTime.Sub(input.StartTime).Seconds()),
 		SportType: input.SportType,
 		UserID:    u.ID,
 	}
-	return d.ActivityRepo.AddActivity(&activity)
+
+	res, err := d.ActivityRepo.AddActivity(&activity)
+
+	if err != nil {
+		logger.Error(err)
+		return nil, err
+	}
+	return res, err
 }
 
 // ImportActivity adds a new Activity to the database for current user
