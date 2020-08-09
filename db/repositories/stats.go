@@ -19,7 +19,7 @@ func (r *StatsRepository) CalculateStatsForUser(userID string) ([]*model.UserSta
 SELECT to_char(date_trunc('month', start_time), 'YYYY-MM-DD') AS period, sum(duration) AS total, sport_type
 FROM activities
 WHERE user_id = ?
-GROUP BY period, sport_type, time_paused
+GROUP BY period, sport_type
 ORDER BY period
 	`
 
@@ -34,20 +34,17 @@ ORDER BY period
 
 // InsertOrUpdateStatsForUser inserts or updates statistical activity data for a given user id
 func (r *StatsRepository) InsertOrUpdateStatsForUser(stats []*model.UserStatMonth, userID string) ([]*model.UserStatMonth, error) {
-	r.DB.RunInTransaction(func(Tx *pg.Tx) error {
+	err := r.DB.RunInTransaction(func(Tx *pg.Tx) error {
 		for _, stat := range stats {
 			stat.UserID = userID
-
-			_, err := r.DB.Model(stat).OnConflict("(period) DO UPDATE").Insert()
-			if err != nil {
-				return nil
-			}
+			_, err := r.DB.Model(stat).OnConflict("(period, sport_type) DO UPDATE").Insert()
+			return err
 		}
 
 		return nil
 	})
 
-	return stats, nil
+	return stats, err
 }
 
 // GetStatsForUserFromDB returns statistical activity data for user ID

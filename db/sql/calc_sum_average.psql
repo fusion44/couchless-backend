@@ -1,0 +1,5 @@
+SELECT to_char(date_trunc('month', start_time), 'YYYY-MM-DD') AS period, sum(duration) as total, sport_type
+FROM activities
+WHERE user_id = 1
+GROUP BY period, sport_type
+ORDER BY period
