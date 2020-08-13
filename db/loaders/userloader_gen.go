@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/fusion44/ll-backend/graph/model"
+	"github.com/fusion44/couchless-backend/graph/model"
 )
 
 // UserLoaderConfig captures the config to create a new UserLoader

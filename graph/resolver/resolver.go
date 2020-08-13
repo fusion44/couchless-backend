@@ -3,7 +3,7 @@
 package resolver
 
 import (
-	"github.com/fusion44/ll-backend/domain"
+	"github.com/fusion44/couchless-backend/domain"
 )
 
 // This file will not be regenerated automatically.

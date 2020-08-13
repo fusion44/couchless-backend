@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/fusion44/ll-backend/graph/model"
+	"github.com/fusion44/couchless-backend/graph/model"
 	"github.com/op/go-logging"
 )
 

@@ -7,10 +7,10 @@ import (
 	"context"
 
 	"github.com/99designs/gqlgen/graphql"
-	loader "github.com/fusion44/ll-backend/db/loaders"
-	"github.com/fusion44/ll-backend/domain"
-	"github.com/fusion44/ll-backend/graph/generated"
-	"github.com/fusion44/ll-backend/graph/model"
+	loader "github.com/fusion44/couchless-backend/db/loaders"
+	"github.com/fusion44/couchless-backend/domain"
+	"github.com/fusion44/couchless-backend/graph/generated"
+	"github.com/fusion44/couchless-backend/graph/model"
 )
 
 func (r *activityResolver) User(ctx context.Context, obj *model.Activity) (*model.User, error) {

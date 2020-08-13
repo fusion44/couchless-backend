@@ -1,6 +1,6 @@
 package model
 
-import "github.com/fusion44/ll-backend/validator"
+import "github.com/fusion44/couchless-backend/validator"
 
 const (
 	minUsernameLength = 2

@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"log"
 
-	gcontext "github.com/fusion44/ll-backend/context"
-	"github.com/fusion44/ll-backend/graph/model"
-	"github.com/fusion44/ll-backend/middleware"
-	service "github.com/fusion44/ll-backend/services"
+	gcontext "github.com/fusion44/couchless-backend/context"
+	"github.com/fusion44/couchless-backend/graph/model"
+	"github.com/fusion44/couchless-backend/middleware"
+	service "github.com/fusion44/couchless-backend/services"
 )
 
 // GetActivities returns the filtered activities for the current user

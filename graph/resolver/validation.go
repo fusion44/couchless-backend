@@ -6,7 +6,7 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/vektah/gqlparser/gqlerror"
 
-	"github.com/fusion44/ll-backend/validator"
+	"github.com/fusion44/couchless-backend/validator"
 )
 
 func validation(ctx context.Context, v validator.Validation) bool {

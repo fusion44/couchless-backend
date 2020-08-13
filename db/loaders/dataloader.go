@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	gcontext "github.com/fusion44/ll-backend/context"
-	"github.com/fusion44/ll-backend/graph/model"
+	gcontext "github.com/fusion44/couchless-backend/context"
+	"github.com/fusion44/couchless-backend/graph/model"
 	"github.com/go-pg/pg/v9"
 )
 

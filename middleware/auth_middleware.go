@@ -5,14 +5,14 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/fusion44/ll-backend/db/repositories"
-	"github.com/fusion44/ll-backend/graph/model"
+	"github.com/fusion44/couchless-backend/db/repositories"
+	"github.com/fusion44/couchless-backend/graph/model"
 
 	"github.com/dgrijalva/jwt-go/request"
 	"github.com/pkg/errors"
 
 	"github.com/dgrijalva/jwt-go"
-	gcontext "github.com/fusion44/ll-backend/context"
+	gcontext "github.com/fusion44/couchless-backend/context"
 )
 
 // AuthMiddleware is a basic middleware to check authentication

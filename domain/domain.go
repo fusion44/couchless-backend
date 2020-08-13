@@ -3,8 +3,8 @@ package domain
 import (
 	"errors"
 
-	"github.com/fusion44/ll-backend/db/repositories"
-	"github.com/fusion44/ll-backend/graph/model"
+	"github.com/fusion44/couchless-backend/db/repositories"
+	"github.com/fusion44/couchless-backend/graph/model"
 )
 
 // App errors

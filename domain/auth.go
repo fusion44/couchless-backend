@@ -5,11 +5,11 @@ import (
 	"errors"
 	"log"
 
-	"github.com/fusion44/ll-backend/graph/model"
-	"github.com/fusion44/ll-backend/middleware"
-	"github.com/fusion44/ll-backend/validator"
+	"github.com/fusion44/couchless-backend/graph/model"
+	"github.com/fusion44/couchless-backend/middleware"
+	"github.com/fusion44/couchless-backend/validator"
 
-	gcontext "github.com/fusion44/ll-backend/context"
+	gcontext "github.com/fusion44/couchless-backend/context"
 )
 
 // Register registers a new user

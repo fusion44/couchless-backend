@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"github.com/fusion44/ll-backend/graph/model"
+	"github.com/fusion44/couchless-backend/graph/model"
 	"github.com/go-pg/pg/v9"
 )
 

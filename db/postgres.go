@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-pg/pg/v9"
 
-	gcontext "github.com/fusion44/ll-backend/context"
+	gcontext "github.com/fusion44/couchless-backend/context"
 )
 
 // Logger ...

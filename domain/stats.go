@@ -3,8 +3,8 @@ package domain
 import (
 	"context"
 
-	"github.com/fusion44/ll-backend/graph/model"
-	"github.com/fusion44/ll-backend/middleware"
+	"github.com/fusion44/couchless-backend/graph/model"
+	"github.com/fusion44/couchless-backend/middleware"
 )
 
 // UpdateStatsForCurrentUser updates all statistics for the current user

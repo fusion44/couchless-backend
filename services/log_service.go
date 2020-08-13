@@ -3,7 +3,7 @@ package service
 import (
 	"os"
 
-	"github.com/fusion44/ll-backend/context"
+	"github.com/fusion44/couchless-backend/context"
 	"github.com/op/go-logging"
 )
 

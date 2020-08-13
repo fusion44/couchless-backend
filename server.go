@@ -5,22 +5,22 @@ import (
 	"log"
 	"net/http"
 
-	loader "github.com/fusion44/ll-backend/db/loaders"
-	"github.com/fusion44/ll-backend/db/repositories"
-	"github.com/fusion44/ll-backend/domain"
-	service "github.com/fusion44/ll-backend/services"
+	loader "github.com/fusion44/couchless-backend/db/loaders"
+	"github.com/fusion44/couchless-backend/db/repositories"
+	"github.com/fusion44/couchless-backend/domain"
+	service "github.com/fusion44/couchless-backend/services"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/rs/cors"
 
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/99designs/gqlgen/handler"
-	"github.com/fusion44/ll-backend/db"
-	"github.com/fusion44/ll-backend/graph/generated"
-	"github.com/fusion44/ll-backend/graph/resolver"
-	projMiddleware "github.com/fusion44/ll-backend/middleware"
+	"github.com/fusion44/couchless-backend/db"
+	"github.com/fusion44/couchless-backend/graph/generated"
+	"github.com/fusion44/couchless-backend/graph/resolver"
+	projMiddleware "github.com/fusion44/couchless-backend/middleware"
 
-	gcontext "github.com/fusion44/ll-backend/context"
+	gcontext "github.com/fusion44/couchless-backend/context"
 )
 
 // AppConfig holds the global configuration

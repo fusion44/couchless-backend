@@ -7,7 +7,7 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	gcontext "github.com/fusion44/ll-backend/context"
+	gcontext "github.com/fusion44/couchless-backend/context"
 )
 
 // User represents all user data
