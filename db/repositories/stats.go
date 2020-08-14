@@ -38,7 +38,9 @@ func (r *StatsRepository) InsertOrUpdateStatsForUser(stats []*model.UserStatMont
 		for _, stat := range stats {
 			stat.UserID = userID
 			_, err := r.DB.Model(stat).OnConflict("(period, sport_type) DO UPDATE").Insert()
-			return err
+			if err != nil {
+				return err
+			}
 		}
 
 		return nil
@@ -51,7 +53,7 @@ func (r *StatsRepository) InsertOrUpdateStatsForUser(stats []*model.UserStatMont
 // These are cached results. Use CalculateStatsForUser id activities where added, updated or deleted
 func (r *StatsRepository) GetStatsForUserFromDB(userID string) ([]*model.UserStatMonth, error) {
 	var stats []*model.UserStatMonth
-	err := r.DB.Model(&stats).Returning("*").Where("user_id = ?", userID).Select()
+	err := r.DB.Model(&stats).Returning("*").Where("user_id = ?", userID).Order("period DESC").Select()
 
 	if err != nil {
 		return nil, err
