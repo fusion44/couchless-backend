@@ -1034,7 +1034,7 @@ func (ec *executionContext) field_Mutation_addActivity_args(ctx context.Context,
 	args := map[string]interface{}{}
 	var arg0 model.NewActivity
 	if tmp, ok := rawArgs["input"]; ok {
-		arg0, err = ec.unmarshalNNewActivity2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐNewActivity(ctx, tmp)
+		arg0, err = ec.unmarshalNNewActivity2githubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐNewActivity(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1062,7 +1062,7 @@ func (ec *executionContext) field_Mutation_importActivity_args(ctx context.Conte
 	args := map[string]interface{}{}
 	var arg0 model.ImportActivity
 	if tmp, ok := rawArgs["input"]; ok {
-		arg0, err = ec.unmarshalNImportActivity2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐImportActivity(ctx, tmp)
+		arg0, err = ec.unmarshalNImportActivity2githubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐImportActivity(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1076,7 +1076,7 @@ func (ec *executionContext) field_Mutation_login_args(ctx context.Context, rawAr
 	args := map[string]interface{}{}
 	var arg0 model.LoginInput
 	if tmp, ok := rawArgs["input"]; ok {
-		arg0, err = ec.unmarshalNLoginInput2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐLoginInput(ctx, tmp)
+		arg0, err = ec.unmarshalNLoginInput2githubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐLoginInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1090,7 +1090,7 @@ func (ec *executionContext) field_Mutation_register_args(ctx context.Context, ra
 	args := map[string]interface{}{}
 	var arg0 model.RegisterInput
 	if tmp, ok := rawArgs["input"]; ok {
-		arg0, err = ec.unmarshalNRegisterInput2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐRegisterInput(ctx, tmp)
+		arg0, err = ec.unmarshalNRegisterInput2githubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐRegisterInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1118,7 +1118,7 @@ func (ec *executionContext) field_Mutation_updateActivity_args(ctx context.Conte
 	args := map[string]interface{}{}
 	var arg0 model.UpdateActivity
 	if tmp, ok := rawArgs["input"]; ok {
-		arg0, err = ec.unmarshalNUpdateActivity2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUpdateActivity(ctx, tmp)
+		arg0, err = ec.unmarshalNUpdateActivity2githubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐUpdateActivity(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1146,7 +1146,7 @@ func (ec *executionContext) field_Query_activities_args(ctx context.Context, raw
 	args := map[string]interface{}{}
 	var arg0 *model.ActivityFilter
 	if tmp, ok := rawArgs["filter"]; ok {
-		arg0, err = ec.unmarshalOActivityFilter2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityFilter(ctx, tmp)
+		arg0, err = ec.unmarshalOActivityFilter2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐActivityFilter(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2056,7 +2056,7 @@ func (ec *executionContext) _Activity_user(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Activity_records(ctx context.Context, field graphql.CollectedField, obj *model.Activity) (ret graphql.Marshaler) {
@@ -2090,7 +2090,7 @@ func (ec *executionContext) _Activity_records(ctx context.Context, field graphql
 	}
 	res := resTmp.([]*model.ActivityRecord)
 	fc.Result = res
-	return ec.marshalNActivityRecord2ᚕᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityRecordᚄ(ctx, field.Selections, res)
+	return ec.marshalNActivityRecord2ᚕᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐActivityRecordᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _ActivityRecord_id(ctx context.Context, field graphql.CollectedField, obj *model.ActivityRecord) (ret graphql.Marshaler) {
@@ -2688,7 +2688,7 @@ func (ec *executionContext) _AuthResponse_authToken(ctx context.Context, field g
 	}
 	res := resTmp.(*model.AuthToken)
 	fc.Result = res
-	return ec.marshalNAuthToken2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐAuthToken(ctx, field.Selections, res)
+	return ec.marshalNAuthToken2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐAuthToken(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _AuthResponse_user(ctx context.Context, field graphql.CollectedField, obj *model.AuthResponse) (ret graphql.Marshaler) {
@@ -2722,7 +2722,7 @@ func (ec *executionContext) _AuthResponse_user(ctx context.Context, field graphq
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _AuthToken_accessToken(ctx context.Context, field graphql.CollectedField, obj *model.AuthToken) (ret graphql.Marshaler) {
@@ -2892,7 +2892,7 @@ func (ec *executionContext) _FileDescriptor_user(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _FileDescriptor_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.FileDescriptor) (ret graphql.Marshaler) {
@@ -3001,7 +3001,7 @@ func (ec *executionContext) _Mutation_register(ctx context.Context, field graphq
 	}
 	res := resTmp.(*model.AuthResponse)
 	fc.Result = res
-	return ec.marshalNAuthResponse2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐAuthResponse(ctx, field.Selections, res)
+	return ec.marshalNAuthResponse2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐAuthResponse(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_login(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3042,7 +3042,7 @@ func (ec *executionContext) _Mutation_login(ctx context.Context, field graphql.C
 	}
 	res := resTmp.(*model.AuthResponse)
 	fc.Result = res
-	return ec.marshalNAuthResponse2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐAuthResponse(ctx, field.Selections, res)
+	return ec.marshalNAuthResponse2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐAuthResponse(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_addActivity(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3083,7 +3083,7 @@ func (ec *executionContext) _Mutation_addActivity(ctx context.Context, field gra
 	}
 	res := resTmp.(*model.Activity)
 	fc.Result = res
-	return ec.marshalNActivity2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivity(ctx, field.Selections, res)
+	return ec.marshalNActivity2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐActivity(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_importActivity(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3124,7 +3124,7 @@ func (ec *executionContext) _Mutation_importActivity(ctx context.Context, field 
 	}
 	res := resTmp.(*model.Activity)
 	fc.Result = res
-	return ec.marshalNActivity2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivity(ctx, field.Selections, res)
+	return ec.marshalNActivity2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐActivity(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_updateActivity(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3165,7 +3165,7 @@ func (ec *executionContext) _Mutation_updateActivity(ctx context.Context, field 
 	}
 	res := resTmp.(*model.Activity)
 	fc.Result = res
-	return ec.marshalNActivity2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivity(ctx, field.Selections, res)
+	return ec.marshalNActivity2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐActivity(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteActivity(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3247,7 +3247,7 @@ func (ec *executionContext) _Mutation_singleUpload(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.FileDescriptor)
 	fc.Result = res
-	return ec.marshalNFileDescriptor2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐFileDescriptor(ctx, field.Selections, res)
+	return ec.marshalNFileDescriptor2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐFileDescriptor(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_activity(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3288,7 +3288,7 @@ func (ec *executionContext) _Query_activity(ctx context.Context, field graphql.C
 	}
 	res := resTmp.(*model.Activity)
 	fc.Result = res
-	return ec.marshalNActivity2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivity(ctx, field.Selections, res)
+	return ec.marshalNActivity2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐActivity(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_activities(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3329,7 +3329,7 @@ func (ec *executionContext) _Query_activities(ctx context.Context, field graphql
 	}
 	res := resTmp.([]*model.Activity)
 	fc.Result = res
-	return ec.marshalNActivity2ᚕᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityᚄ(ctx, field.Selections, res)
+	return ec.marshalNActivity2ᚕᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐActivityᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_user(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3370,7 +3370,7 @@ func (ec *executionContext) _Query_user(ctx context.Context, field graphql.Colle
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_userStats(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -3404,7 +3404,7 @@ func (ec *executionContext) _Query_userStats(ctx context.Context, field graphql.
 	}
 	res := resTmp.([]*model.UserStatMonth)
 	fc.Result = res
-	return ec.marshalNUserStatMonth2ᚕᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUserStatMonth(ctx, field.Selections, res)
+	return ec.marshalNUserStatMonth2ᚕᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐUserStatMonth(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5808,11 +5808,11 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNActivity2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivity(ctx context.Context, sel ast.SelectionSet, v model.Activity) graphql.Marshaler {
+func (ec *executionContext) marshalNActivity2githubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐActivity(ctx context.Context, sel ast.SelectionSet, v model.Activity) graphql.Marshaler {
 	return ec._Activity(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNActivity2ᚕᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Activity) graphql.Marshaler {
+func (ec *executionContext) marshalNActivity2ᚕᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐActivityᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Activity) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -5836,7 +5836,7 @@ func (ec *executionContext) marshalNActivity2ᚕᚖgithubᚗcomᚋfusion44ᚋll�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNActivity2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivity(ctx, sel, v[i])
+			ret[i] = ec.marshalNActivity2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐActivity(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -5849,7 +5849,7 @@ func (ec *executionContext) marshalNActivity2ᚕᚖgithubᚗcomᚋfusion44ᚋll�
 	return ret
 }
 
-func (ec *executionContext) marshalNActivity2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivity(ctx context.Context, sel ast.SelectionSet, v *model.Activity) graphql.Marshaler {
+func (ec *executionContext) marshalNActivity2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐActivity(ctx context.Context, sel ast.SelectionSet, v *model.Activity) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -5859,11 +5859,11 @@ func (ec *executionContext) marshalNActivity2ᚖgithubᚗcomᚋfusion44ᚋllᚑb
 	return ec._Activity(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNActivityRecord2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityRecord(ctx context.Context, sel ast.SelectionSet, v model.ActivityRecord) graphql.Marshaler {
+func (ec *executionContext) marshalNActivityRecord2githubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐActivityRecord(ctx context.Context, sel ast.SelectionSet, v model.ActivityRecord) graphql.Marshaler {
 	return ec._ActivityRecord(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNActivityRecord2ᚕᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityRecordᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ActivityRecord) graphql.Marshaler {
+func (ec *executionContext) marshalNActivityRecord2ᚕᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐActivityRecordᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ActivityRecord) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -5887,7 +5887,7 @@ func (ec *executionContext) marshalNActivityRecord2ᚕᚖgithubᚗcomᚋfusion44
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNActivityRecord2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityRecord(ctx, sel, v[i])
+			ret[i] = ec.marshalNActivityRecord2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐActivityRecord(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -5900,7 +5900,7 @@ func (ec *executionContext) marshalNActivityRecord2ᚕᚖgithubᚗcomᚋfusion44
 	return ret
 }
 
-func (ec *executionContext) marshalNActivityRecord2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityRecord(ctx context.Context, sel ast.SelectionSet, v *model.ActivityRecord) graphql.Marshaler {
+func (ec *executionContext) marshalNActivityRecord2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐActivityRecord(ctx context.Context, sel ast.SelectionSet, v *model.ActivityRecord) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -5910,11 +5910,11 @@ func (ec *executionContext) marshalNActivityRecord2ᚖgithubᚗcomᚋfusion44ᚋ
 	return ec._ActivityRecord(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNAuthResponse2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐAuthResponse(ctx context.Context, sel ast.SelectionSet, v model.AuthResponse) graphql.Marshaler {
+func (ec *executionContext) marshalNAuthResponse2githubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐAuthResponse(ctx context.Context, sel ast.SelectionSet, v model.AuthResponse) graphql.Marshaler {
 	return ec._AuthResponse(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAuthResponse2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐAuthResponse(ctx context.Context, sel ast.SelectionSet, v *model.AuthResponse) graphql.Marshaler {
+func (ec *executionContext) marshalNAuthResponse2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐAuthResponse(ctx context.Context, sel ast.SelectionSet, v *model.AuthResponse) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -5924,11 +5924,11 @@ func (ec *executionContext) marshalNAuthResponse2ᚖgithubᚗcomᚋfusion44ᚋll
 	return ec._AuthResponse(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNAuthToken2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐAuthToken(ctx context.Context, sel ast.SelectionSet, v model.AuthToken) graphql.Marshaler {
+func (ec *executionContext) marshalNAuthToken2githubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐAuthToken(ctx context.Context, sel ast.SelectionSet, v model.AuthToken) graphql.Marshaler {
 	return ec._AuthToken(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAuthToken2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐAuthToken(ctx context.Context, sel ast.SelectionSet, v *model.AuthToken) graphql.Marshaler {
+func (ec *executionContext) marshalNAuthToken2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐAuthToken(ctx context.Context, sel ast.SelectionSet, v *model.AuthToken) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -5952,11 +5952,11 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNFileDescriptor2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐFileDescriptor(ctx context.Context, sel ast.SelectionSet, v model.FileDescriptor) graphql.Marshaler {
+func (ec *executionContext) marshalNFileDescriptor2githubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐFileDescriptor(ctx context.Context, sel ast.SelectionSet, v model.FileDescriptor) graphql.Marshaler {
 	return ec._FileDescriptor(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNFileDescriptor2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐFileDescriptor(ctx context.Context, sel ast.SelectionSet, v *model.FileDescriptor) graphql.Marshaler {
+func (ec *executionContext) marshalNFileDescriptor2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐFileDescriptor(ctx context.Context, sel ast.SelectionSet, v *model.FileDescriptor) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -5980,7 +5980,7 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNImportActivity2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐImportActivity(ctx context.Context, v interface{}) (model.ImportActivity, error) {
+func (ec *executionContext) unmarshalNImportActivity2githubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐImportActivity(ctx context.Context, v interface{}) (model.ImportActivity, error) {
 	return ec.unmarshalInputImportActivity(ctx, v)
 }
 
@@ -5998,15 +5998,15 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
-func (ec *executionContext) unmarshalNLoginInput2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐLoginInput(ctx context.Context, v interface{}) (model.LoginInput, error) {
+func (ec *executionContext) unmarshalNLoginInput2githubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐLoginInput(ctx context.Context, v interface{}) (model.LoginInput, error) {
 	return ec.unmarshalInputLoginInput(ctx, v)
 }
 
-func (ec *executionContext) unmarshalNNewActivity2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐNewActivity(ctx context.Context, v interface{}) (model.NewActivity, error) {
+func (ec *executionContext) unmarshalNNewActivity2githubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐNewActivity(ctx context.Context, v interface{}) (model.NewActivity, error) {
 	return ec.unmarshalInputNewActivity(ctx, v)
 }
 
-func (ec *executionContext) unmarshalNRegisterInput2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐRegisterInput(ctx context.Context, v interface{}) (model.RegisterInput, error) {
+func (ec *executionContext) unmarshalNRegisterInput2githubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐRegisterInput(ctx context.Context, v interface{}) (model.RegisterInput, error) {
 	return ec.unmarshalInputRegisterInput(ctx, v)
 }
 
@@ -6038,7 +6038,7 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) unmarshalNUpdateActivity2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUpdateActivity(ctx context.Context, v interface{}) (model.UpdateActivity, error) {
+func (ec *executionContext) unmarshalNUpdateActivity2githubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐUpdateActivity(ctx context.Context, v interface{}) (model.UpdateActivity, error) {
 	return ec.unmarshalInputUpdateActivity(ctx, v)
 }
 
@@ -6056,11 +6056,11 @@ func (ec *executionContext) marshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋg
 	return res
 }
 
-func (ec *executionContext) marshalNUser2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2githubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
 	return ec._User(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -6070,7 +6070,7 @@ func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋfusion44ᚋllᚑbacke
 	return ec._User(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNUserStatMonth2ᚕᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUserStatMonth(ctx context.Context, sel ast.SelectionSet, v []*model.UserStatMonth) graphql.Marshaler {
+func (ec *executionContext) marshalNUserStatMonth2ᚕᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐUserStatMonth(ctx context.Context, sel ast.SelectionSet, v []*model.UserStatMonth) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -6094,7 +6094,7 @@ func (ec *executionContext) marshalNUserStatMonth2ᚕᚖgithubᚗcomᚋfusion44�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOUserStatMonth2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUserStatMonth(ctx, sel, v[i])
+			ret[i] = ec.marshalOUserStatMonth2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐUserStatMonth(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -6333,15 +6333,15 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) unmarshalOActivityFilter2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityFilter(ctx context.Context, v interface{}) (model.ActivityFilter, error) {
+func (ec *executionContext) unmarshalOActivityFilter2githubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐActivityFilter(ctx context.Context, v interface{}) (model.ActivityFilter, error) {
 	return ec.unmarshalInputActivityFilter(ctx, v)
 }
 
-func (ec *executionContext) unmarshalOActivityFilter2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityFilter(ctx context.Context, v interface{}) (*model.ActivityFilter, error) {
+func (ec *executionContext) unmarshalOActivityFilter2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐActivityFilter(ctx context.Context, v interface{}) (*model.ActivityFilter, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalOActivityFilter2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐActivityFilter(ctx, v)
+	res, err := ec.unmarshalOActivityFilter2githubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐActivityFilter(ctx, v)
 	return &res, err
 }
 
@@ -6445,11 +6445,11 @@ func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel
 	return ec.marshalOTime2timeᚐTime(ctx, sel, *v)
 }
 
-func (ec *executionContext) marshalOUserStatMonth2githubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUserStatMonth(ctx context.Context, sel ast.SelectionSet, v model.UserStatMonth) graphql.Marshaler {
+func (ec *executionContext) marshalOUserStatMonth2githubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐUserStatMonth(ctx context.Context, sel ast.SelectionSet, v model.UserStatMonth) graphql.Marshaler {
 	return ec._UserStatMonth(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalOUserStatMonth2ᚖgithubᚗcomᚋfusion44ᚋllᚑbackendᚋgraphᚋmodelᚐUserStatMonth(ctx context.Context, sel ast.SelectionSet, v *model.UserStatMonth) graphql.Marshaler {
+func (ec *executionContext) marshalOUserStatMonth2ᚖgithubᚗcomᚋfusion44ᚋcouchlessᚑbackendᚋgraphᚋmodelᚐUserStatMonth(ctx context.Context, sel ast.SelectionSet, v *model.UserStatMonth) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
