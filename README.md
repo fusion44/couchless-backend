@@ -41,6 +41,7 @@ In project root:\ `go run server.go`
 Open GraphQL Playground: [http://localhost:8081](http://localhost:8081)
 
 ## Develop
+These steps are only necessary if you want to help develop the app.
 
 ### Reset the database
 
@@ -57,6 +58,10 @@ source ./.env
 cd backend/graph/model
 go run github.com/vektah/dataloaden UserLoader string *github.com/couchless-backend/graph/model/model.User
 ```
+
+### Update generated files on schema change or name change
+Run in project root: `go generate ./...`\
+Alternatively run this: `go run github.com/99designs/gqlgen generate`
 
 ## Changelog
 
