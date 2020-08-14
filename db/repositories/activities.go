@@ -53,7 +53,7 @@ func (r *ActivitiesRepository) DeleteActivity(activity *model.Activity) error {
 func (r *ActivitiesRepository) GetActivities(userID string, filter *model.ActivityFilter, limit, offset *int) ([]*model.Activity, error) {
 	var activities []*model.Activity
 
-	query := r.DB.Model(&activities).Where("user_id = ?", userID).Order("id")
+	query := r.DB.Model(&activities).Where("user_id = ?", userID).Order("start_time DESC")
 
 	if filter != nil {
 		if filter.StartTime != nil {
