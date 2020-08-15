@@ -120,6 +120,8 @@ func (cs *ImporterService) ImportFITJSON(jsonFilePath string) (*ImportResult, er
 			a.BoundaryWest = fallbackLong * scale
 		}
 
+		var lastLatVal, lastLongVal float64
+
 		for i, rec := range f.Records {
 			ts := time.Unix(int64(rec.Timestamp+FitUTCTimestamp), 0)
 
@@ -139,10 +141,29 @@ func (cs *ImporterService) ImportFITJSON(jsonFilePath string) (*ImportResult, er
 				altitude = findFirstNonNilAltitude(&f)
 			}
 
+			latVal *= scale
+			longVal *= scale
+
+			// Sometimes watches deliver wrong results.
+			// We bridge the gap by using the last valid value
+			// until OK. A better approach would be to interpolate
+			// the values.
+			// TODO: interpolate values
+			if latVal < -90 || latVal > 90 {
+				latVal = lastLatVal
+			}
+
+			if longVal < -90 || longVal > 90 {
+				longVal = lastLongVal
+			}
+
+			lastLatVal = latVal
+			lastLongVal = longVal
+
 			ar := &model.ActivityRecord{
 				Timestamp:               ts,
-				PositionLat:             latVal * scale,
-				PositionLong:            longVal * scale,
+				PositionLat:             latVal,
+				PositionLong:            longVal,
 				Distance:                rec.Distance,
 				TimeFromCourse:          int(rec.TimeFromCourse),
 				CompressedSpeedDistance: rec.CompressedSpeedDistance,
@@ -178,6 +199,16 @@ func (cs *ImporterService) ImportFITJSON(jsonFilePath string) (*ImportResult, er
 			}
 
 			recs[i] = ar
+		}
+
+		if a.BoundaryEast < -90 || a.BoundaryEast > 90 || a.BoundaryWest < -90 || a.BoundaryWest > 90 {
+			a.BoundaryEast = 0
+			a.BoundaryWest = 0
+		}
+
+		if a.BoundaryNorth < -90 || a.BoundaryNorth > 90 || a.BoundarySouth < -90 || a.BoundarySouth > 90 {
+			a.BoundaryNorth = 0
+			a.BoundarySouth = 0
 		}
 
 		return &ImportResult{Activity: a, Records: recs}, nil
